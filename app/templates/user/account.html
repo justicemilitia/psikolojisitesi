@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Hesap Bilgilerim{% endblock %}
+{% block content %}
+<section class="py-20 bg-gray-50">
+    <div class="max-w-2xl mx-auto px-6">
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+            <h1 class="text-2xl font-bold text-gray-900 mb-6" data-translate="user-profile-account">Account Informations</h1>
+            <form method="POST" action="{{ url_for('user_profile.account') }}">
+                {{ form.hidden_tag() }}
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-2">E-Mail</label>
+                    <input type="email" value="{{ current_user.email }}" disabled
+                           class="w-full bg-gray-100 border border-gray-300 rounded-lg px-4 py-2 text-gray-500 cursor-not-allowed">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2" data-translate="full-name">Full Name</label>
+                    {{ form.full_name(class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary") }}
+                </div>
+                {{ form.submit(class="w-full bg-primary text-white py-3 px-6 !rounded-button hover:bg-red-700 transition-colors", value="Update Information") }}
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

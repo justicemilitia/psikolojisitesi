@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Şifre Güncelleme - PsikologSitesi{% endblock %}
+
+{% block content %}
+<section class="py-20 bg-gray-50 min-h-screen">
+    <div class="max-w-2xl mx-auto px-6">
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+            <h1 class="text-2xl font-bold text-gray-900 mb-6" data-translate="update-password">Şifre Güncelle</h1>
+
+            <form method="POST" action="{{ url_for('user_profile.profile') }}">
+                {{ form.hidden_tag() }}
+
+                <div class="mb-4">
+                    {{ form.old_password.label(class="block text-gray-700 font-semibold mb-2", data_translate="old-password") }}
+                    {% if form.old_password.errors %}
+                        {{ form.old_password(class="w-full border border-red-500 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500") }}
+                        <div class="text-red-500 text-xs mt-1">
+                            {% for error in form.old_password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.old_password(class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary") }}
+                    {% endif %}
+                </div>
+
+                <div class="mb-4">
+                    {{ form.new_password.label(class="block text-gray-700 font-semibold mb-2", data_translate="new-password") }}
+                    {% if form.new_password.errors %}
+                        {{ form.new_password(class="w-full border border-red-500 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500") }}
+                        <div class="text-red-500 text-xs mt-1">
+                            {% for error in form.new_password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.new_password(class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary") }}
+                    {% endif %}
+                </div>
+
+                <div class="mb-4">
+                    {{ form.confirm_new_password.label(class="block text-gray-700 font-semibold mb-2", data_translate="confirm-new-password") }}
+                    {% if form.confirm_new_password.errors %}
+                        {{ form.confirm_new_password(class="w-full border border-red-500 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500") }}
+                        <div class="text-red-500 text-xs mt-1">
+                            {% for error in form.confirm_new_password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.confirm_new_password(class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary") }}
+                    {% endif %}
+                </div>
+
+                
+                {{ form.submit_password(class="w-full bg-primary text-white py-3 px-4 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200",value="Update Password") }}
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

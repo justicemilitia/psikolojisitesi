@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Ödeme - {{ plan_details.name }}{% endblock %}
+{% block content %}
+<section class="py-20 bg-gray-50">
+    <div class="max-w-2xl mx-auto px-6">
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+            <h1 class="text-2xl font-bold text-gray-900 mb-2" data-translate="payment-step">Ödeme Adımı</h1>
+            <p class="text-gray-600 mb-6"><span data-translate="your-chosen-plan">Seçtiğiniz plan: </span><strong>{{ plan_details.name }} ({{ plan_details.price }})</strong></p>
+            
+            <ul class="space-y-2 text-gray-600 mb-8 list-disc list-inside bg-gray-50 p-4 rounded-lg">
+                {% for feature in plan_details.features %}
+                    <li>{{ feature }}</li>
+                {% endfor %}
+            </ul>
+
+            <form method="POST" action="{{ url_for('subscription.payment', plan_name=plan_name) }}">
+                {{ form.hidden_tag() }}
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-2" data-translate="full-name">Full Name</label>
+                    {{ form.full_name(class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary") }}
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2" data-translate="phone-number">Phone Number</label>
+                    {{ form.phone_number(class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary") }}
+                </div>
+                {{ form.submit(value="Make Payment", class="w-full bg-primary text-white py-3 px-6 !rounded-button hover:bg-red-700 transition-colors") }}
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+

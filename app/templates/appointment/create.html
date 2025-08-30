@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}Book Appointment - PsikologSitesi{% endblock %}
+
+{% block content %}
+<section class="py-16 bg-gray-50">
+    <div class="max-w-5xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Left Side: Appointment Form -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-2xl shadow-lg p-8">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                    <i class="ri-calendar-check-line text-primary mr-2 text-3xl"></i>
+                    Book an Appointment
+                </h3>
+                <form method="POST" action="" class="space-y-6">
+                    {{ form.hidden_tag() }}
+                    
+                    <!-- Psychologist Select -->
+                    <div>
+                        {{ form.psychologist_id.label(class="block text-gray-700 font-semibold mb-2") }}
+                        {{ form.psychologist_id(class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary") }}
+                    </div>
+
+                    <!-- Date Picker -->
+                    <div>
+                        {{ form.date.label(class="block text-gray-700 font-semibold mb-2") }}
+                        {{ form.date(class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary", type="date", min=now.strftime('%Y-%m-%d')) }}
+                    </div>
+
+                    <!-- Time Picker -->
+                    <div>
+                        {{ form.time.label(class="block text-gray-700 font-semibold mb-2") }}
+                        {{ form.time(class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary", type="time") }}
+                        <p class="text-gray-500 text-sm mt-1">Please check psychologist availability before selecting a time.</p>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div>
+                        {{ form.submit(class="w-full bg-primary text-white py-3 px-6 rounded-lg font-semibold hover:bg-red-700 transition-colors") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Side: Availability Check -->
+        <div>
+            <div class="bg-white rounded-2xl shadow-lg p-8">
+                <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                    <i class="ri-time-line text-primary mr-2 text-2xl"></i>
+                    Check Psychologist Availability
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex items-start gap-3">
+                        <div class="bg-primary text-white w-8 h-8 flex items-center justify-center rounded-full">1</div>
+                        <p class="text-gray-700">Select a psychologist</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="bg-primary text-white w-8 h-8 flex items-center justify-center rounded-full">2</div>
+                        <p class="text-gray-700">Pick a date</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="bg-primary text-white w-8 h-8 flex items-center justify-center rounded-full">3</div>
+                        <p class="text-gray-700">Click to see available slots</p>
+                    </div>
+                </div>
+                <button id="check-availability-btn" class="mt-6 w-full border-2 border-primary text-primary py-3 px-6 rounded-lg font-semibold hover:bg-primary/5 transition-all duration-200" disabled>
+                    Check Availability
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal -->
+<div id="availability-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-2xl shadow-lg max-w-lg w-full p-6 relative">
+        <button id="close-modal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">
+            <i class="ri-close-line text-2xl"></i>
+        </button>
+        <h3 class="text-xl font-bold text-gray-900 mb-4">Available Slots</h3>
+        <div id="slots-container" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const psychologistSelect = document.getElementById('{{ form.psychologist_id.id }}');
+    const dateInput = document.getElementById('{{ form.date.id }}');
+    const timeInput = document.getElementById('{{ form.time.id }}');
+    const checkAvailabilityBtn = document.getElementById('check-availability-btn');
+    const modal = document.getElementById('availability-modal');
+    const closeModal = document.getElementById('close-modal');
+    const slotsContainer = document.getElementById('slots-container');
+
+    // URL parametrelerinden formu doldur
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('psychologist_id')) {
+        psychologistSelect.value = params.get('psychologist_id');
+    }
+    if (params.has('date')) {
+        dateInput.value = params.get('date');
+    }
+    if (params.has('time')) {
+        timeInput.value = params.get('time');
+    }
+
+    function toggleButton() {
+        checkAvailabilityBtn.disabled = !(psychologistSelect.value && dateInput.value);
+    }
+
+    psychologistSelect.addEventListener('change', toggleButton);
+    dateInput.addEventListener('input', toggleButton);
+
+    checkAvailabilityBtn.addEventListener('click', function() {
+        const psychologistId = psychologistSelect.value;
+        const date = dateInput.value;
+        if (!psychologistId || !date) return;
+
+        fetch(`/psychologists/${psychologistId}/availability?date=${date}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            slotsContainer.innerHTML = '';
+            if (data.slots.length > 0) {
+                data.slots.forEach(time => {
+                    const slotBtn = document.createElement('button');
+                    slotBtn.type = 'button';
+                    slotBtn.className = "block text-center bg-white border border-primary text-primary px-4 py-2 rounded-lg hover:bg-primary hover:text-white transition-colors w-full";
+                    slotBtn.textContent = time;
+
+                    slotBtn.addEventListener('click', () => {
+                        timeInput.value = time;
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                    });
+
+                    slotsContainer.appendChild(slotBtn);
+                });
+            } else {
+                slotsContainer.innerHTML = '<p class="col-span-full text-center text-gray-500">No available slots for this date.</p>';
+            }
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        });
+    });
+
+    closeModal.addEventListener('click', () => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    });
+
+    toggleButton();
+});
+</script>
+{% endblock %}

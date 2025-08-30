@@ -1,0 +1,277 @@
+{# templates/matching/form.html #}
+{% extends "base.html" %}
+
+{% block title %}Therapist Matching{% endblock %}
+
+{% block content %}
+<section class="py-12 bg-gray-50 min-h-screen">
+  <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center" data-translate="therapist-matching">Therapist Matching</h2>
+
+    {% set step = step or 1 %}
+
+    <form method="POST" action="{{ url_for('matching.find_therapist') }}" id="matchingForm">
+      <input type="hidden" name="step" value="{{ step }}" id="stepInput">
+
+      <div class="space-y-6">
+        {# STEP 1 #}
+        {% if step == 1 %}
+          <h3 class="font-semibold text-lg" data-translate="received-psychological-support-before">Have you received psychological support before?</h3>
+          <div class="space-y-3 radio-group">
+              {% for subfield in form.previous_support %}
+                  <label class="block p-3 border rounded cursor-pointer {% if subfield.checked %}bg-primary text-white{% else %}hover:bg-gray-100{% endif %}">
+                      {{ subfield(class="mr-2") }} {{ subfield.label }}
+                  </label>
+              {% endfor %}
+          </div>
+        {# STEP 2 #}
+        {% elif step == 2 %}
+          <h3 class="font-semibold text-lg" data-translate="what-kind-of-psychological-support-receive">What kind of psychological support did you receive?</h3>
+          <div class="space-y-3 radio-group">
+              {% for subfield in form.previous_support_type %}
+                  <label class="block p-3 border rounded cursor-pointer {% if subfield.checked %}bg-primary text-white{% else %}hover:bg-gray-100{% endif %}">
+                      {{ subfield(class="mr-2") }} {{ subfield.label }}
+                  </label>
+              {% endfor %}
+          </div>
+        {# STEP 3 #}
+        {% elif step == 3 %}
+          <h3 class="font-semibold text-lg" data-translate="approach-based-psychotherapy-support-receive">What approach-based psychotherapy support did you receive?</h3>
+          <div class="space-y-3 radio-group">
+              {% for subfield in form.psychotherapy_approach %}
+                  <label class="block p-3 border rounded cursor-pointer {% if subfield.checked %}bg-primary text-white{% else %}hover:bg-gray-100{% endif %}">
+                      {{ subfield(class="mr-2") }} {{ subfield.label }}
+                  </label>
+              {% endfor %}
+          </div>
+        {# STEP 4 #}
+        {% elif step == 4 %}
+          <h3 class="font-semibold text-lg" data-translate="frequency-numberof-sessions-per-month">What is the frequency/number of sessions per month?</h3>
+          <div class="space-y-3 radio-group">
+              {% for subfield in form.session_frequency %}
+                  <label class="block p-3 border rounded cursor-pointer {% if subfield.checked %}bg-primary text-white{% else %}hover:bg-gray-100{% endif %}">
+                      {{ subfield(class="mr-2") }} {{ subfield.label }}
+                  </label>
+              {% endfor %}
+          </div>
+        {# STEP 5 #}
+        {% elif step == 5 %}
+          <h3 class="font-semibold text-lg" data-translate="briefly-explain-reason-for-seeking-therapy">Could you briefly explain your reason for seeking therapy? (Optional)</h3>
+          {{ form.reason(class="w-full p-3 border rounded-lg", rows="4", maxlength=200, placeholder="You can write the reason for your meeting here...") }}
+        {# STEP 6 #}
+        {% elif step == 6 %}
+          <h3 class="font-semibold text-lg" data-translate="psychological-support-looking">What kind of psychological support are you looking for?</h3>
+          <div class="space-y-3 radio-group">
+              {% for subfield in form.support_type %}
+                  <label class="block p-3 border rounded cursor-pointer {% if subfield.checked %}bg-primary text-white{% else %}hover:bg-gray-100{% endif %}">
+                      {{ subfield(class="mr-2") }} {{ subfield.label }}
+                  </label>
+              {% endfor %}
+          </div>
+        {# STEP 7 #}
+        {% elif step == 7 %}
+          <h3 class="font-semibold text-lg" data-translate="improvement-through-psychological-support">Which of the following would you like to see improvement in through psychological support? <br> <span class="text-sm font-normal text-gray-500">(En fazla 3 seçim yapabilirsiniz)</span></h3>
+          <div class="space-y-3" id="multi-select-container">
+              {% for subfield in form.improvement_areas %}
+              <label class="multi-checkbox-label block p-3 border rounded cursor-pointer flex items-center justify-between hover:bg-gray-100">
+                  <span class="flex items-center">
+                      <input type="checkbox" name="improvement_areas" value="{{ subfield.data }}" class="mr-2 multi-checkbox" {% if subfield.data in answers.get('7', []) %}checked{% endif %}>
+                      {{ subfield.label }}
+                  </span>
+                  <span class="selection-order hidden bg-gray-200 text-gray-700 font-semibold text-xs h-6 w-6 rounded-full flex items-center justify-center"></span>
+              </label>
+              {% endfor %}
+          </div>
+        {# STEP 8 #}
+        {% elif step == 8 %}
+          <h3 class="font-semibold text-lg" data-translate="typeof-medications-duration-use">Would you like to provide information about the type of medications and duration of use? (Optional)</h3>
+          {{ form.medication_info(class="w-full p-3 border rounded-lg", rows="4", maxlength=200, placeholder="You can write your medication information here...") }}
+        {# STEP 9 #}
+        {% elif step == 9 %}
+          <h3 class="font-semibold text-lg" data-translate="currently-on-medication">Are you currently on medication?</h3>
+          <div class="space-y-3 radio-group">
+              {% for subfield in form.medication_continues %}
+                  <label class="block p-3 border rounded cursor-pointer {% if subfield.checked %}bg-primary text-white{% else %}hover:bg-gray-100{% endif %}">
+                      {{ subfield(class="mr-2") }} {{ subfield.label }}
+                  </label>
+              {% endfor %}
+          </div>
+        {# STEP 10 #}
+        {% elif step == 10 %}
+          <h3 class="font-semibold text-lg" data-translate="sleep-appetite-problems">Do you have sleep/appetite problems?</h3>
+          <div class="space-y-3 radio-group">
+              {% for subfield in form.sleep_appetite %}
+                  <label class="block p-3 border rounded cursor-pointer {% if subfield.checked %}bg-primary text-white{% else %}hover:bg-gray-100{% endif %}">
+                      {{ subfield(class="mr-2") }} {{ subfield.label }}
+                  </label>
+              {% endfor %}
+          </div>
+        {# STEP 11 #}
+        {% elif step == 11 %}
+          <h3 class="font-semibold text-lg" data-translate="how-long-been-together">How long have you been together?</h3>
+          <div class="space-y-3 radio-group">
+              {% for subfield in form.been_together_years %}
+                  <label class="block p-3 border rounded cursor-pointer {% if subfield.checked %}bg-primary text-white{% else %}hover:bg-gray-100{% endif %}">
+                      {{ subfield(class="mr-2") }} {{ subfield.label }}
+                  </label>
+              {% endfor %}
+          </div>
+        {# STEP 12 #}
+        {% elif step == 12 %}
+          <h3 class="font-semibold text-lg" data-translate="improvement-relationship-psychological-support">Which of the following would you like to see improvement in regarding your relationship by seeking support? <br> <span class="text-sm font-normal text-gray-500">(En fazla 3 seçim yapabilirsiniz)</span></h3>
+          <div class="space-y-3" id="multi-select-container">
+              {% for subfield in form.togetherness_improvement_areas %}
+              <label class="multi-checkbox-label block p-3 border rounded cursor-pointer flex items-center justify-between hover:bg-gray-100">
+                  <span class="flex items-center">
+                      <input type="checkbox" name="togetherness_improvement_areas" value="{{ subfield.data }}" class="mr-2 multi-checkbox" {% if subfield.data in answers.get('12', []) %}checked{% endif %}>
+                      {{ subfield.label }}
+                  </span>
+                  <span class="selection-order hidden bg-gray-200 text-gray-700 font-semibold text-xs h-6 w-6 rounded-full flex items-center justify-center"></span>
+              </label>
+              {% endfor %}
+          </div>
+        {# STEP 13 #}
+        {% elif step == 13 %}
+          <h3 class="font-semibold text-lg" data-translate="number-of-children">Number of children?</h3>
+          <div class="mt-4">
+              <label for="number_of_children" class="sr-only">Number of children</label>
+              <input type="number" id="number_of_children" name="number_of_children" class="block w-full px-4 py-2 border rounded-md focus:ring-primary focus:border-primary" placeholder="Enter the number of children" min="0" required>
+          </div>
+        {# STEP 14 #}
+        {% elif step == 14 %}
+          <h3 class="font-semibold text-lg" data-translate="childs-age">Child's age?</h3>
+          <div class="mt-4">
+              <label for="age_of_children" class="sr-only">Child's age</label>
+              <input type="number" id="age_of_children" name="age_of_children" class="block w-full px-4 py-2 border rounded-md focus:ring-primary focus:border-primary" placeholder="Enter child age" min="0" required>
+          </div>
+          {# STEP 15 #}
+        {% elif step == 15 %}
+          <h3 class="font-semibold text-lg" data-translate="improvement-child">Which of the following would you like to see improvement in for your child? <br> <span class="text-sm font-normal text-gray-500">(You can make up to 3 selections.)</span></h3>
+          <div class="space-y-3" id="multi-select-container">
+              {% for subfield in form.children_improvement_areas %}
+              <label class="multi-checkbox-label block p-3 border rounded cursor-pointer flex items-center justify-between hover:bg-gray-100">
+                  <span class="flex items-center">
+                      <input type="checkbox" name="children_improvement_areas" value="{{ subfield.data }}" class="mr-2 multi-checkbox" {% if subfield.data in answers.get('15', []) %}checked{% endif %}>
+                      {{ subfield.label }}
+                  </span>
+                  <span class="selection-order hidden bg-gray-200 text-gray-700 font-semibold text-xs h-6 w-6 rounded-full flex items-center justify-center"></span>
+              </label>
+              {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="flex justify-between mt-8">
+        {% if step > 1 %}
+            <a href="{{ url_for('matching.go_back') }}" class="px-4 py-2 rounded bg-gray-200" data-translate="back">Back</a>
+        {% else %}
+            <span></span>
+        {% endif %}
+        <button type="submit" class="ml-auto px-4 py-2 rounded bg-primary text-white" id="nextButton">
+          {% if step in [7, 12, 15] %}Find Suitable Therapists{% else %}Forward{% endif %}
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+{# Resume modal yalnızca sayfaya ilk girişte ve has_progress True olduğunda görünür #}
+{% if has_progress %}
+  <div id="resumeOverlay" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+      <h3 class="text-lg font-semibold mb-3" data-translate="registration-appears-incomplete">Your registration appears to be incomplete.</h3>
+      <p class="text-sm text-gray-700 mb-4" data-translate="continue-or-re-answer-questions">Would you like to continue or re-answer the questions?</p>
+      <div class="flex justify-end space-x-3">
+        <a href="{{ url_for('matching.reset') }}" class="px-4 py-2 rounded bg-gray-200" data-translate="start-over">Start Over</a>
+        <a id="resumeBtn" href="{{ url_for('matching.find_therapist', step=resume_step) }}" class="px-4 py-2 rounded bg-primary text-white" data-translate="continue">Continue</a>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+<style>
+.bg-primary { background: #b91c1c; color: white; }
+.bg-primary:hover { background: #9b1a1a; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('matchingForm');
+  const stepInput = document.getElementById('stepInput');
+
+  // Radio button'lar için otomatik ileri sarma
+  const radioGroups = document.querySelectorAll('.radio-group');
+  radioGroups.forEach(group => {
+    group.addEventListener('change', function(e) {
+      if (e.target.type === 'radio') {
+        form.submit();
+      }
+    });
+  });
+
+  // Çoklu seçim (step 7) mantığı
+  const multiCheckboxes = Array.from(document.querySelectorAll('.multi-checkbox'));
+  let selectionOrder = [];
+  
+  // Başlangıçta seçili olanları yükle
+  multiCheckboxes.forEach(cb => {
+      if (cb.checked) {
+          if (!selectionOrder.includes(cb.value)) {
+              selectionOrder.push(cb.value);
+          }
+      }
+  });
+  updateSelectionBadges();
+
+  function updateSelectionBadges() {
+    multiCheckboxes.forEach(cb => {
+      const parentLabel = cb.closest('.multi-checkbox-label');
+      const badge = parentLabel.querySelector('.selection-order');
+      const idx = selectionOrder.indexOf(cb.value);
+      
+      badge.textContent = idx >= 0 ? (idx + 1) : '';
+      if (idx >= 0) {
+        parentLabel.classList.add('bg-primary', 'text-white');
+        parentLabel.classList.remove('hover:bg-gray-100');
+        badge.classList.remove('hidden');
+        badge.classList.add('bg-white', 'text-primary');
+      } else {
+        parentLabel.classList.remove('bg-primary', 'text-white');
+        parentLabel.classList.add('hover:bg-gray-100');
+        badge.classList.add('hidden');
+        badge.classList.remove('bg-white', 'text-primary');
+      }
+    });
+  }
+
+  multiCheckboxes.forEach(cb => {
+    cb.addEventListener('change', function() {
+      if (this.checked) {
+        if (selectionOrder.length >= 3) {
+          this.checked = false;
+          alert('You can make up to 3 selections.');
+          return;
+        }
+        if (!selectionOrder.includes(this.value)) selectionOrder.push(this.value);
+      } else {
+        selectionOrder = selectionOrder.filter(v => v !== this.value);
+      }
+      updateSelectionBadges();
+    });
+  });
+
+  // Form gönderimini kontrol et (sadece çoklu seçim için)
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      const currentStep = parseInt(stepInput.value);
+      
+      // Çoklu seçim adımında (7) boş gönderimi engelle
+      if (currentStep === 7 && selectionOrder.length === 0) {
+        e.preventDefault();
+        alert('Please make at least one selection.');
+      }
+    });
+  }
+});
+</script>
+{% endblock %}

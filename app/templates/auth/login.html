@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Login - PsikologSitesi{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-screen bg-gray-50 p-4">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+        <div class="text-center mb-8">
+            <h2 class="text-4xl font-bold text-gray-900 mb-2" data-translate="nav-login">Login</h2>
+            <p class="text-gray-600" data-translate="login-to-your-account-continue">Log in to your account to continue.</p>
+        </div>
+
+        <div class="flex mb-6">
+            <button id="bireysel-tab" class="flex-1 py-2 px-4 text-center text-gray-700 font-semibold border-b-2 border-primary transition-colors duration-200"data-translate="individual">Bireysel</button>
+            <button id="kurumsal-tab" class="flex-1 py-2 px-4 text-center text-gray-500 font-semibold border-b-2 border-gray-200 transition-colors duration-200"data-translate="corporate">Kurumsal</button>
+        </div>
+
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <input type="hidden" name="user_type" id="user-type-login" value="bireysel">
+
+            <div id="kurumsal-fields-login" class="hidden">
+                <div class="mb-5">
+                    {{ form.company_name.label(class="block text-gray-700 text-sm font-semibold mb-2") }}
+                    <select id="company_name_select" name="{{ form.company_name.name }}" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">Lütfen şirketinizi seçin</option>
+                    </select>
+                </div>
+            </div>
+            <div id="bireysel-fields-login">
+                <div class="mb-5">
+                    {{ form.email.label(class="block text-gray-700 text-sm font-semibold mb-2") }}
+                    {% if form.email.errors %}
+                        {{ form.email(class="w-full p-3 border border-red-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500") }}
+                        <div class="text-red-500 text-xs mt-1">
+                            {% for error in form.email.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.email(class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary") }}
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="mb-5">
+                {{ form.password.label(class="block text-gray-700 text-sm font-semibold mb-2") }}
+                {% if form.password.errors %}
+                    {{ form.password(class="w-full p-3 border border-red-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500") }}
+                    <div class="text-red-500 text-xs mt-1">
+                        {% for error in form.password.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.password(class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary") }}
+                {% endif %}
+            </div>
+            
+            <div class="flex items-center justify-between mb-5">
+                <div class="flex items-center">
+                    {{ form.remember(class="form-checkbox h-4 w-4 text-primary transition-colors duration-150 ease-in-out") }}
+                    {{ form.remember.label(class="ml-2 block text-gray-700 text-sm") }}
+                </div>
+                <a href="#" class="text-sm text-primary hover:text-red-700 transition-colors duration-150"data-translate="forgot-password">Şifremi unuttum?</a>
+            </div>
+            
+            {{ form.submit(class="w-full bg-primary text-white py-3 px-4 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200") }}
+        </form>
+        
+        <div class="text-center mt-6">
+            <small class="text-gray-600">
+                Don't have an account yet? 
+                <a href="{{ url_for('auth.register') }}" class="text-primary hover:text-red-700 font-semibold transition-colors duration-150">Register Here</a>
+            </small>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const bireyselTab = document.getElementById('bireysel-tab');
+        const kurumsalTab = document.getElementById('kurumsal-tab');
+        const kurumsalFields = document.getElementById('kurumsal-fields-login');
+        const userTypeInput = document.getElementById('user-type-login');
+        // KOD DEĞİŞİKLİĞİ: company_name_login yerine company_name_select ID'sini kullandık
+        const companySelect = document.getElementById('company_name_select');
+        let companiesLoaded = false;
+
+        function switchTab(type) {
+            if (type === 'kurumsal') {
+                bireyselTab.classList.remove('border-primary', 'text-gray-700');
+                bireyselTab.classList.add('border-gray-200', 'text-gray-500');
+                kurumsalTab.classList.add('border-primary', 'text-gray-700');
+                kurumsalTab.classList.remove('border-gray-200', 'text-gray-500');
+                kurumsalFields.classList.remove('hidden');
+                userTypeInput.value = 'kurumsal';
+            } else {
+                kurumsalTab.classList.remove('border-primary', 'text-gray-700');
+                kurumsalTab.classList.add('border-gray-200', 'text-gray-500');
+                bireyselTab.classList.add('border-primary', 'text-gray-700');
+                bireyselTab.classList.remove('border-gray-200', 'text-gray-500');
+                kurumsalFields.classList.add('hidden');
+                userTypeInput.value = 'bireysel';
+            }
+        }
+
+        kurumsalTab.addEventListener('click', function() {
+            switchTab('kurumsal');
+            if (!companiesLoaded) {
+                fetch('{{ url_for('auth.get_companies') }}')
+                    .then(response => response.json())
+                    .then(data => {
+                        companySelect.innerHTML = '<option value="">Please select your company</option>';
+                        data.forEach(company => {
+                            const option = document.createElement('option');
+                            option.value = company.id;
+                            option.textContent = company.name;
+                            companySelect.appendChild(option);
+                        });
+                        companiesLoaded = true;
+                    })
+                    .catch(error => console.error('Error fetching companies:', error));
+            }
+        });
+
+        bireyselTab.addEventListener('click', function() {
+            switchTab('bireysel');
+        });
+    });
+</script>
+{% endblock %}

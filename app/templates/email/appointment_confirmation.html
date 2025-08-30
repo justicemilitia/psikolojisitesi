@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Randevu Onayı</title>
+</head>
+<body>
+    <p>Merhaba {{ user.full_name }},</p>
+    <p>Yeni randevunuz başarıyla oluşturulmuştur. Randevu detaylarınız aşağıdadır:</p>
+    <ul>
+        <li><strong>Psikolog:</strong> {{ appointment.psychologist.full_name }}</li>
+        <li><strong>Tarih:</strong> {{ appointment.appointment_date.strftime('%d-%m-%Y') }}</li>
+        <li><strong>Saat:</strong> {{ appointment.appointment_time.strftime('%H:%M') }}</li>
+    </ul>
+    <p>Randevunuz alınmıştır. Randevunuz onaylandığında tarafınıza mail ile bilgi verilecektir.</p>
+    <br>
+    <p>Sağlıklı günler dileriz,<br><strong>ModeCALM Ekibi</strong></p>
+</body>
+</html>

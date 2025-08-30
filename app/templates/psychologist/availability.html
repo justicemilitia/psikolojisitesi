@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}{{ psychologist.full_name }} - Availability{% endblock %}
+
+{% block content %}
+<section class="py-20 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-6">
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+            <div class="mb-8 border-b pb-4">
+                <h3 class="text-2xl font-bold text-gray-900" data-translate="availability-title">{{ psychologist.full_name }} - Müsaitlik</h3>
+            </div>
+            
+            <div class="mb-8">
+                <h4 class="text-xl font-semibold text-gray-900 mb-4" data-translate="select-date-heading">Bir Tarih Seçin</h4>
+                <form method="GET" action="{{ url_for('psychologist.psychologist_availability', psychologist_id=psychologist.id) }}" class="flex flex-col sm:flex-row gap-4 items-center">
+                    <div class="flex-1 w-full">
+                        <input type="date" name="date" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="{{ date.strftime('%Y-%m-%d') }}" min="{{ now.strftime('%Y-%m-%d') }}">
+                    </div>
+                    <div class="w-full sm:w-auto">
+                        <button type="submit" class="w-full sm:w-auto bg-primary text-white px-6 py-2 !rounded-button hover:bg-red-800 transition-colors whitespace-nowrap" data-translate="check-availability-button">
+                            Müsait Zamanları Kontrol Et
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div>
+                <div class="flex items-center justify-between border-b pb-4 mb-6">
+                    <h4 class="text-l font-bold text-gray-900">
+                        <i class="ri-time-line text-primary-500 mr-2"></i>
+                        <span class="text-primary">{{ date.strftime('%d %B %Y') }}</span> <span data-translate="available-slots-for-date">Tarihi İçin Müsait Zaman Dilimleri</span>
+                    </h4>
+                </div>
+                {% if available_slots %}
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-6">
+                        {% for slot in available_slots %}
+                            {% if (date.strftime('%Y-%m-%d') > now.strftime('%Y-%m-%d')) or (date.strftime('%Y-%m-%d') == now.strftime('%Y-%m-%d') and slot > now.time()) %}
+                                <a href="{{ url_for('appointment.create_appointment') }}?psychologist_id={{ psychologist.id }}&date={{ date.strftime('%Y-%m-%d') }}&time={{ slot.strftime('%H:%M') }}" class="block text-center bg-white border border-primary text-primary px-4 py-2 rounded-lg hover:bg-gray-200 hover:text-primary transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+                                    {{ slot.strftime('%H:%M') }}
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="bg-gray-100 text-gray-600 rounded-lg p-4 text-center" data-translate="no-slots-message">
+                        Bu tarihte müsait zaman dilimi bulunmamaktadır. Lütfen başka bir tarih seçin.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

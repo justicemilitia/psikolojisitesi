@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Randevu Onayı</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .header { background-color: #f4f4f4; padding: 10px; text-align: center; border-bottom: 1px solid #ddd; }
+        .content { padding: 20px 0; }
+        .footer { text-align: center; font-size: 0.8em; color: #888; margin-top: 20px; padding-top: 10px; border-top: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Randevu Onayı</h2>
+        </div>
+        <div class="content">
+            <p>Merhaba {{ user.first_name }},</p>
+            <p>Randevunuz onaylanmıştır. Lütfen randevu saatinde hazır olunuz.</p>
+            <p><strong>Randevu Bilgileri:</strong></p>
+            <ul>
+                <li><strong>Psikolog:</strong> {{ appointment.psychologist.full_name }}</li>
+                <li><strong>Tarih:</strong> {{ appointment.appointment_date.strftime('%d-%m-%Y') }}</li>
+                <li><strong>Saat:</strong> {{ appointment.appointment_time.strftime('%H:%M') }}</li>
+            </ul>
+        </div>
+        <div class="footer">
+            <p>Bu mail otomatik olarak gönderilmiştir. Lütfen yanıtlamayınız.</p>
+        </div>
+    </div>
+</body>
+</html>

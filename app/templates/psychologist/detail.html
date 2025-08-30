@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}{{ psychologist.full_name }}{% endblock %}
+
+{% block content %}
+<section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+            <div class="md:flex md:gap-8 mb-8 items-start">
+                <div class="w-full md:w-1/3 mb-6 md:mb-0">
+                    <img src="{{ url_for('static', filename='images/' ~ (psychologist.profile_image_url if psychologist.profile_image_url else 'default_avatar.png')) }}" alt="{{ psychologist.full_name }}" class="w-full h-auto object-cover rounded-2xl shadow-md">
+                </div>
+                <div class="w-full md:w-2/3">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ psychologist.full_name }}</h1>
+                    <p class="text-xl text-primary font-semibold mb-4">{{ psychologist.specialty }}</p>
+                    <p class="text-gray-600 mb-6">{{ psychologist.bio }}</p>
+                    <a href="{{ url_for('psychologist.psychologist_availability', psychologist_id=psychologist.id) }}" class="bg-primary text-white px-6 py-2 !rounded-button hover:bg-red-800 transition-colors whitespace-nowrap">
+                        <i class="ri-calendar-check-line mr-2"></i><span data-translate="book-appointment-btn">Randevu Al</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="border-t pt-8">
+                <div class="flex border-b border-gray-200 mb-4">
+                    <button class="tab-button border-b-2 border-transparent text-gray-600 font-semibold py-2 px-4 hover:border-primary hover:text-primary transition-colors focus:outline-none active-tab" data-tab="about" data-translate="tab-about">
+                        Özgeçmiş
+                    </button>
+                    <button class="tab-button border-b-2 border-transparent text-gray-600 font-semibold py-2 px-4 hover:border-primary hover:text-primary transition-colors focus:outline-none" data-tab="education" data-translate="tab-education">
+                        Eğitim
+                    </button>
+                    <button class="tab-button border-b-2 border-transparent text-gray-600 font-semibold py-2 px-4 hover:border-primary hover:text-primary transition-colors focus:outline-none" data-tab="specialties" data-translate="tab-specialties">
+                        Uzmanlık Alanları
+                    </button>
+                    <button class="tab-button border-b-2 border-transparent text-gray-600 font-semibold py-2 px-4 hover:border-primary hover:text-primary transition-colors focus:outline-none" data-tab="reviews">
+                        <span data-translate="tab-reviews">Değerlendirmeler</span> ({{ psychologist.review_count }})
+                    </button>
+                </div>
+
+                <div id="tab-content-container">
+                    <div id="tab-about" class="tab-content active-tab-content">
+                        <p class="text-gray-600 leading-relaxed">{{ psychologist.bio }}</p>
+                    </div>
+                    <div id="tab-education" class="tab-content hidden">
+                        <ul class="list-disc list-inside text-gray-600 space-y-2">
+                            {% for edu in psychologist.get_education() %}
+                                <li>{{ edu }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div id="tab-specialties" class="tab-content hidden">
+                        <ul class="list-disc list-inside text-gray-600 space-y-2">
+                            {% for spec in psychologist.get_specialties() %}
+                                <li>{{ spec }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div id="tab-reviews" class="tab-content hidden">
+                        {# Yorum Yapma Formu #}
+                        {% if current_user.is_authenticated %}
+                            <div class="bg-gray-50 p-6 rounded-lg mb-8">
+                                <h3 class="text-xl font-bold mb-4" data-translate="leave-review-heading">Değerlendirme Yap</h3>
+                                <form action="{{ url_for('psychologist.add_review', psychologist_id=psychologist.id) }}" method="POST">
+                                    {{ form.hidden_tag() }}
+                                    <div class="mb-4">
+                                        <label class="block text-gray-700 font-semibold mb-2" data-translate="rating-label">{{ form.rating.label }}</label>
+                                        <div class="flex flex-row-reverse justify-end items-center star-rating">
+                                            {% for subfield in form.rating %}
+                                                {{ subfield(class="peer hidden") }}
+                                                <label for="{{ subfield.id }}" class="text-2xl text-gray-300 cursor-pointer peer-hover:text-yellow-400 hover:text-yellow-400 peer-checked:text-yellow-500">
+                                                    <i class="ri-star-fill"></i>
+                                                </label>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-gray-700 font-semibold mb-2" data-translate="comment-label">{{ form.comment.label }}</label>
+                                        {# placeholder="" ekleyerek Python'dan gelebilecek varsayılan metni eziyoruz #}
+                                        {# data-translate ekleyerek JavaScript'in bu alanı çevirmesini sağlıyoruz #}
+                                        {{ form.comment(class="w-full px-3 py-2 border rounded-lg", rows="4", placeholder="Share your experience...") }}
+                                        
+                                    </div>
+                                    <input type="submit" value="Leave a Review" data-translate="leave-review-btn" class="bg-primary text-white px-6 py-2 !rounded-button hover:bg-red-800 cursor-pointer">
+                                </form>
+                            </div>
+                        {% else %}
+                            <div class="bg-blue-50 text-blue-700 p-4 rounded-lg mb-8">
+                                <span data-translate="login-to-review-prompt">Değerlendirme yapmak için </span>
+                                <a href="{{ url_for('auth.login') }}" class="font-bold hover:underline" data-translate="login-action">giriş yapmalısınız</a>.
+                            </div>
+                        {% endif %}
+
+                        {# Mevcut Yorumlar #}
+                        <div class="space-y-6">
+                            {% if reviews %}
+                                {% for review in reviews %}
+                                    <div class="border-b pb-6">
+                                        <div class="flex items-center mb-2">
+                                            <div class="flex items-center">
+                                                {% for _ in range(review.rating) %}<i class="ri-star-fill text-yellow-400"></i>{% endfor %}
+                                                {% for _ in range(5 - review.rating) %}<i class="ri-star-line text-gray-300"></i>{% endfor %}
+                                            </div>
+                                            <span class="ml-4 font-bold text-gray-800">{{ review.user.full_name }}</span>
+                                            <span class="ml-auto text-sm text-gray-500">{{ review.created_at.strftime('%d.%m.%Y') }}</span>
+                                        </div>
+                                        <p class="text-gray-600">{{ review.comment }}</p>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-gray-500" data-translate="no-reviews-message">Bu psikolog için henüz bir değerlendirme yapılmamış.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tab = button.dataset.tab;
+
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('active-tab', 'border-primary', 'text-primary');
+                    btn.classList.add('border-transparent');
+                });
+                tabContents.forEach(content => {
+                    content.classList.add('hidden');
+                    content.classList.remove('active-tab-content');
+                });
+
+                button.classList.add('active-tab', 'border-primary', 'text-primary');
+                document.getElementById('tab-' + tab).classList.remove('hidden');
+                document.getElementById('tab-' + tab).classList.add('active-tab-content');
+            });
+        });
+
+        // Set initial active state
+        const initialActiveButton = document.querySelector('.tab-button.active-tab');
+        if (initialActiveButton) {
+            initialActiveButton.classList.add('border-primary', 'text-primary');
+        }
+
+        // Trigger translation for dynamically added elements
+        const savedLang = localStorage.getItem('lang') || 'en';
+        // The main translatePage function from base.html will handle the translation.
+        // No need to call it again here as this script runs after the main one.
+    });
+</script>
+{% endblock %}

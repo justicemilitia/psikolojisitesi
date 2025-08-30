@@ -1,0 +1,224 @@
+/* PsikologSitesi - Main CSS */
+
+/* Custom Variables */
+:root {
+    --primary-color: #a52a2a;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+}
+
+/* General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+    padding: 2rem 0;
+}
+
+footer {
+    margin-top: auto;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 1rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+/* Cards */
+.card {
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+/* Buttons */
+.btn {
+    border-radius: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Forms */
+.form-control {
+    border-radius: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    border: 1px solid #ced4da;
+}
+
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Navbar */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+/* Jumbotron */
+.jumbotron {
+    background-color: #e9ecef;
+    border-radius: 0.5rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Badges */
+.badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+    border-radius: 0.25rem;
+}
+
+/* Alerts */
+.alert {
+    border-radius: 0.25rem;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+}
+
+/* Tables */
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+}
+
+.table th,
+.table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .jumbotron {
+        padding: 1rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+}
+
+/* Custom components */
+
+/* Psychologist card */
+.psychologist-card {
+    transition: transform 0.3s ease;
+}
+
+.psychologist-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Appointment status badges */
+.badge-planned {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.badge-completed {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.badge-cancelled {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+/* Time slot selection */
+.time-slot {
+    display: inline-block;
+    margin: 0.25rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--primary-color);
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.time-slot:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.time-slot.selected {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Date picker custom styling */
+input[type="date"] {
+    padding: 0.375rem 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+}
+
+/* Specialty tags */
+.specialty-tag {
+    display: inline-block;
+    background-color: var(--info-color);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    margin: 0.25rem;
+    font-size: 0.875rem;
+}

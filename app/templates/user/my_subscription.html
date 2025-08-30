@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}My Subscription{% endblock %}
+{% block content %}
+<section class="py-20 bg-gray-50">
+    <div class="max-w-2xl mx-auto px-6">
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+            <h1 class="text-2xl font-bold text-gray-900 mb-6">Subscription Informations</h1>
+            {% if current_user.has_active_subscription() %}
+                <div class="bg-blue-50 border-l-4 border-blue-500 text-blue-800 p-6 rounded-lg">
+                    <p class="text-lg font-semibold">Current Plan: {% if plan_details.name == "Standart Plan" %}Standard Plan{% elif plan_details.name == "Gelişmiş Plan" %}Advanced Plan{% elif plan_details.name == "Yoğun Destek Planı" %}Intensive Support Plan{% else %}{{ plan_details.name }}{% endif %}</p>
+                    <p>Remaining Sessions: <strong class="text-2xl">{{ current_user.remaining_sessions }}</strong></p>
+                    <p class="mt-2 text-sm">Subscription End Date: {{ current_user.subscription_expiry_date.strftime('%d-%m-%Y') }}</p>
+                </div>
+                <a href="{{ url_for('subscription.list_subscriptions') }}" class="mt-6 inline-block text-primary hover:text-red-700">View or Change Plans &rarr;</a>
+            {% else %}
+                <div class="text-center p-6 bg-gray-100 rounded-lg">
+                    <p class="text-gray-600 mb-4">You currently do not have an active subscription.</p>
+                    <a href="{{ url_for('subscription.list_subscriptions') }}" class="bg-primary text-white py-3 px-6 !rounded-button hover:bg-red-700 transition-colors">
+                        Explore Subscription Plans
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

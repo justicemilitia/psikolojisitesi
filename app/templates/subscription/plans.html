@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Abonelik Planları - Modecalm{% endblock %}
+
+{% block content %}
+<section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4" data-translate="nav-ourSubscriptionPlans">Our Subscription Plans</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto" data-translate="subscription-plan-description">Choose the plan that suits you for the best investment you can make in your mental health.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Standart Plan -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 flex flex-col border-t-4 border-gray-300">
+                <h3 class="text-2xl font-semibold text-gray-900 mb-2" data-translate="subscription-standard-plan">Standard Plan</h3>
+                <p class="text-4xl font-bold text-primary mb-4">59€<span class="text-lg font-normal text-gray-500" data-translate="subscription-month">/Monthly</span></p>
+                <ul class="space-y-4 text-gray-600 mb-8 flex-grow">
+                    <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i><span data-translate="one-session-per-month">1 Session per Month (50 min)</span></li>
+                    <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i><span data-translate="AI-powered-pre-assessment">AI-powered Pre-Assessment</span></li>
+                    <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i><span data-translate="development-analysis-report">Development analysis report</span></li>
+                    <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i><span data-translate="Post-session-AI-therapist-note-summary">Post-session AI therapist note summary</span></li>
+                </ul>
+                <a href="{{ url_for('subscription.payment', plan_name='standard') }}" class="w-full text-center bg-primary text-white py-3 px-6 !rounded-button hover:bg-red-700 transition-colors whitespace-nowrap" data-translate="select-plan">
+                    Select Plan
+                </a>
+            </div>
+
+            <!-- Gelişmiş Plan -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 flex flex-col border-t-4 border-primary transform scale-105">
+                <p class="absolute top-0 -translate-y-1/2 bg-primary text-white text-sm font-semibold px-4 py-1 rounded-full" data-translate="most-popular">En Popüler</p>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-2" data-translate="subscription-advanced-plan">Advanced Plan</h3>
+                <p class="text-4xl font-bold text-primary mb-4">89€<span class="text-lg font-normal text-gray-500" data-translate="subscription-month">/Monthly</span></p>
+                <ul class="space-y-4 text-gray-600 mb-8 flex-grow">
+                    <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i><span data-translate="two-session-per-month">2 Session per Month</span></li>
+                    <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i><span data-translate="all-standard-plan-features">All standard plan features</span></li>
+                    <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i><span data-translate="AI-powered-schema-analysis-recommendation-module">AI-powered schema analysis and recommendation module</span></li>
+                    <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i><span data-translate="mobile-sync-mood-tracking">Mobile sync for mood tracking</span></li>
+                    <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i><span data-translate="therapy-plan-update-algorithm">Therapy plan update algorithm</span></li>
+                </ul>
+                <a href="{{ url_for('subscription.payment', plan_name='advanced') }}" class="w-full text-center bg-primary text-white py-3 px-6 !rounded-button hover:bg-red-700 transition-colors whitespace-nowrap" data-translate="select-plan">
+                    Select Plan
+                </a>
+            </div>
+
+            <!-- Yoğun Destek Planı -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 flex flex-col border-t-4 border-gray-300">
+                <h3 class="text-2xl font-semibold text-gray-900 mb-2" data-translate="intensive-support-plan">Yoğun Destek Planı</h3>
+                <p class="text-4xl font-bold text-primary mb-4">149€<span class="text-lg font-normal text-gray-500" data-translate="subscription-month">/Monthly</span></p>
+                <ul class="space-y-4 text-gray-600 mb-8 flex-grow">
+                    <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i><span data-translate="four-session-per-month">4 Session per Month</span></li>
+                    <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i><span data-translate="VR-supported-module-access">VR-supported module access (trauma, addiction, etc.)</span></li>
+                    <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i><span data-translate="weekly-mood-analysis-notification-follow-up">Weekly mood analysis and notification follow-up</span></li>
+                    <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i><span data-translate="access-exclusive-content-personal-recommendations">Access to exclusive content and personal recommendations</span></li>
+                </ul>
+                <a href="{{ url_for('subscription.payment', plan_name='intensive') }}" class="w-full text-center bg-primary text-white py-3 px-6 !rounded-button hover:bg-red-700 transition-colors whitespace-nowrap" data-translate="select-plan">
+                    Select Plan
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

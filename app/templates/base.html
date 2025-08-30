@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Modecalm - Professional Online Therapy Service{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/arkaplan.jpg') }}" type="image/jpg">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#991b1b',
+                        secondary: '#dc2626'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :where([class^="ri-"])::before {
+            content: "\f3c2";
+        }
+        @keyframes talking {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .talking {
+            animation: talking 0.5s ease-in-out infinite;
+        }
+    </style>
+    {% block styles %}{% endblock %}
+</head>
+<body class="bg-white">
+    <header class="bg-white shadow-sm">
+        <nav class="px-8 py-4 flex items-center justify-between">
+<a href="http://127.0.0.1:5000//">
+    <div class="flex flex-col items-center">
+        <div class="flex items-center font-['Montserrat'] text-3xl font-bold text-primary">
+            M<i class="ri-shut-down-line -mt-1 text-3xl"></i>decalm
+        </div>
+        <div class="font-['Montserrat'] text-sm uppercase tracking-widest text-gray-700 mt-1">
+            Psychology
+        </div>
+    </div>
+</a>
+<a href="https://wa.me/+905535014290" target="_blank" 
+   class="fixed bottom-6 right-6 flex items-center justify-center p-4 
+          bg-[#25D366] text-white rounded-full shadow-lg transition-transform
+          hover:scale-110 hover:shadow-xl group">
+    <span class="mr-3 hidden sm:inline-block font-semibold">Contact</span>
+    <i class="ri-whatsapp-line text-xl"></i>
+</a>
+</div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="{{ url_for('main.index') }}" class="text-gray-700 hover:text-primary transition-colors" data-translate="nav-home">Home</a>
+                <a href="{{ url_for('psychologist.list_psychologists') }}" class="text-gray-700 hover:text-primary transition-colors" data-translate="nav-therapists">Therapists</a>
+                <a href="{{ url_for('user.appointments') }}" class="text-gray-700 hover:text-primary transition-colors" data-translate="nav-appointments">My Appointments</a>
+                <a href="{{ url_for('subscription.list_subscriptions') }}" class="text-gray-700 hover:text-primary transition-colors" data-translate="nav-Subscriptions">Subscriptions</a>
+                <a href="#" class="text-gray-700 hover:text-primary transition-colors" data-translate="nav-blog">Blog</a>
+                
+            </div>
+            <div class="flex items-center space-x-4">                
+                {% if current_user.is_authenticated %}
+                    <div class="relative">
+                        <button id="userMenuButton" class="flex items-center gap-2 focus:outline-none">
+                            <span>{{ current_user.full_name }}</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+
+                        <!-- Menü başta gizli -->
+                        <div id="userMenu" 
+                             class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden">
+                            <a href="{{ url_for('user_profile.account') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" data-translate="user-profile-account">
+                                Account Informations
+                            </a>
+                            <a href="{{ url_for('user_profile.profile') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" data-translate="update-password">
+                                Update Password
+                            </a>
+                            <a href="{{ url_for('user_profile.my_subscription') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" data-translate="user-profile-mysubscription">
+                                Subscription
+                            </a>
+                            <a href="{{ url_for('auth.logout') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" data-translate="auth-logout">
+                                Log out
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="bg-white text-red-800 border border-red-800 px-6 py-2 !rounded-button hover:bg-red-800 hover:text-white transition-colors whitespace-nowrap" data-translate="nav-login">Login</a>
+                    <a href="{{ url_for('auth.register') }}" class="bg-primary text-white px-6 py-2 !rounded-button hover:bg-red-800 transition-colors whitespace-nowrap" data-translate="nav-register">Register</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="max-w-2xl mx-auto px-20 mt-15">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category == 'success' %}
+                    <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg">
+                        {{ message }}
+                    </div>
+                {% elif category == 'error' or category == 'danger' %}
+                    <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg">
+                        {{ message }}
+                    </div>
+                {% elif category == 'info' %}
+                    <div class="p-4 mb-4 text-sm text-blue-700 bg-blue-100 rounded-lg">
+                        {{ message }}
+                    </div>
+                {% else %}
+                    <div class="p-4 mb-4 text-sm text-gray-700 bg-gray-100 rounded-lg">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </main>
+
+
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="font-['Pacifico'] text-2xl text-white mb-4">Modecalm</div>
+                    <p class="text-gray-400 mb-4" data-translate="footer-about">Supporting your mental health with professional online therapy services.</p>
+                    <div class="flex space-x-4">
+                        <div class="w-8 h-8 flex items-center justify-center">
+                            <i class="ri-facebook-fill text-xl text-gray-400 hover:text-white cursor-pointer"></i>
+                        </div>
+                        <div class="w-8 h-8 flex items-center justify-center">
+                            <i class="ri-twitter-fill text-xl text-gray-400 hover:text-white cursor-pointer"></i>
+                        </div>
+                        <div class="w-8 h-8 flex items-center justify-center">
+                            <i class="ri-instagram-fill text-xl text-gray-400 hover:text-white cursor-pointer"></i>
+                        </div>
+                        <div class="w-8 h-8 flex items-center justify-center">
+                            <i class="ri-linkedin-fill text-xl text-gray-400 hover:text-white cursor-pointer"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4" data-translate="footer-services">Services</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Individual Therapy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Couple Therapy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Family Therapy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Group Therapy</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4" data-translate="footer-support">Support</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors" data-translate="nav-faq">FAQ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors" data-translate="footer-contact">Contact</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Technical Support</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors" data-translate="nav-blog">Blog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4" data-translate="footer-contact">Contact</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-3">
+                                <i class="ri-phone-line text-gray-400"></i>
+                            </div>
+                            <span class="text-gray-400">+90 533 960 9232</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-3">
+                                <i class="ri-mail-line text-gray-400"></i>
+                            </div>
+                            <span class="text-gray-400">info@modecalm.com</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-3">
+                                <i class="ri-map-pin-line text-gray-400"></i>
+                            </div>
+                            <span class="text-gray-400">Istanbul, Turkey</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="flex space-x-6 mb-4 md:mb-0">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors" data-translate="footer-privacy">Privacy Policy</a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors" data-translate="footer-terms">Terms of Use</a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors" data-translate="footer-cookies">Cookie Policy</a>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-gray-400" data-translate="footer-payment">Payment Methods:</span>
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <i class="ri-visa-fill text-xl text-gray-400"></i>
+                        </div>
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <i class="ri-mastercard-fill text-xl text-gray-400"></i>
+                        </div>
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <i class="ri-paypal-fill text-xl text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-8">
+                    <p class="text-gray-400" data-translate="footer-copyright">&copy; {{ now.year }} Modecalm. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script id="radio-checkbox-handler">
+        // JavaScript code from Online-Terapi-Uygulaması2.html for radio and checkbox handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const radioInputs = document.querySelectorAll('input[type="radio"]');
+            const checkboxInputs = document.querySelectorAll('input[type="checkbox"]');
+            const button = document.getElementById("userMenuButton");
+            const menu = document.getElementById("userMenu");
+
+            if (button && menu) {
+                button.addEventListener("click", function(e) {
+                    e.stopPropagation();
+                    menu.classList.toggle("hidden");
+                });
+
+                document.addEventListener("click", function() {
+                    if (!menu.classList.contains("hidden")) {
+                        menu.classList.add("hidden");
+                    }
+                });
+            }
+            radioInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    const name = this.name;
+                    document.querySelectorAll(`input[name="${name}"]`).forEach(radio => {
+                        const indicator = radio.parentElement.querySelector('div > div');
+                        if (radio.checked) {
+                            indicator.classList.remove('hidden');
+                        } else {
+                            indicator.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+            checkboxInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    const indicator = this.parentElement.querySelector('div > div');
+                    const icon = indicator.querySelector('i');
+                    if (this.checked) {
+                        indicator.classList.add('bg-primary');
+                        icon.classList.remove('hidden');
+                    } else {
+                        indicator.classList.remove('bg-primary');
+                        icon.classList.add('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+    <script id="ai-assistant-handler">
+        // JavaScript code from Online-Terapi-Uygulaması2.html for AI assistant
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatMessages = document.getElementById('chat-messages');
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.getElementById('send-message');
+            const voiceInputBtn = document.getElementById('voice-input-btn');
+            const toggleVoiceBtn = document.getElementById('toggle-voice');
+            let isVoiceEnabled = false;
+            let isListening = false;
+            let recognition = null;
+            if ('webkitSpeechRecognition' in window) {
+                recognition = new webkitSpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = 'tr-TR';
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    userInput.value = transcript;
+                };
+                recognition.onend = function() {
+                    voiceInputBtn.innerHTML = '<i class="ri-mic-line text-xl"></i>';
+                    isListening = false;
+                };
+            }
+            function addMessage(message, isUser = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `mb-4 ${isUser ? 'text-right' : ''}`;
+                messageDiv.innerHTML = `
+                    <div class="inline-block ${isUser ? 'bg-primary text-white' : 'bg-white'} rounded-xl px-4 py-2 shadow">
+                        ${message}
+                    </div>
+                `;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            function processMessage(message) {
+                addMessage(message, true);
+                const response = "Hello! I received your message. How can I help you?";
+                const avatar = document.getElementById('ai-avatar');
+                
+                if (avatar) {
+                    avatar.style.transform = 'scale(1.1)';
+                    avatar.style.transition = 'transform 0.3s ease';
+                    setTimeout(() => {
+                        avatar.style.transform = 'scale(1)';
+                    }, 300);
+                }
+
+                setTimeout(() => {
+                    addMessage(response);
+                    if (isVoiceEnabled) {
+                        speakText(response);
+                        if (avatar) {
+                            avatar.classList.add('talking');
+                            setTimeout(() => {
+                                avatar.classList.remove('talking');
+                            }, 2000);
+                        }
+                    }
+                }, 1000);
+            }
+            function speakText(text) {
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'en-US';
+                    speechSynthesis.speak(utterance);
+                }
+            }
+            if (voiceInputBtn) {
+                voiceInputBtn.addEventListener('click', function() {
+                    if (!recognition) {
+                        alert('Your browser does not support voice input.');
+                        return;
+                    }
+                    if (!isListening) {
+                        recognition.start();
+                        voiceInputBtn.innerHTML = '<i class="ri-mic-fill text-xl text-primary"></i>';
+                        isListening = true;
+                    } else {
+                        recognition.stop();
+                        voiceInputBtn.innerHTML = '<i class="ri-mic-line text-xl"></i>';
+                        isListening = false;
+                    }
+                });
+            }
+            if (toggleVoiceBtn) {
+                toggleVoiceBtn.addEventListener('click', function() {
+                    isVoiceEnabled = !isVoiceEnabled;
+                    toggleVoiceBtn.innerHTML = isVoiceEnabled ?
+                        '<i class="ri-volume-up-fill text-primary"></i><span>Voice Response On</span>' :
+                        '<i class="ri-volume-up-line"></i><span>Voice Response</span>';
+                });
+            }
+            if (sendButton) {
+                sendButton.addEventListener('click', function() {
+                    const message = userInput.value.trim();
+                    if (message) {
+                        processMessage(message);
+                        userInput.value = '';
+                    }
+                });
+            }
+            if (userInput) {
+                userInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        const message = userInput.value.trim();
+                        if (message) {
+                            processMessage(message);
+                            userInput.value = '';
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+    <script id="language-handler">
+    document.addEventListener('DOMContentLoaded', function() {
+        const translations = {
+            tr: {
+                // Türkçe çevirileriniz
+                "help-me-choose": "Neye ihtiyacınız olduğundan emin değil misiniz? Yardımcı olalım!",
+                "nav-home": "Anasayfa",
+                "nav-therapists": "Terapistler",
+                "nav-Subscriptions": "Abonelikler",
+                "nav-appointments": "Randevularım",
+                "nav-ourSubscriptionPlans": "Abonelik Planlarımız",
+                "nav-blog": "Blog",
+                "nav-faq": "SSS",
+                "nav-contact": "İletişim",
+                "nav-login": "Giriş Yap",
+                "nav-register": "Kayıt Ol",
+                "hero-title": "Profesyonel Online Terapi Hizmeti",
+                "hero-subtitle": "Uzman terapistlerle güvenli görüşme platformu. Kendi evinizin konforunda, gizlilik içinde profesyonel destek alın.",
+                "start-button": "Hemen Başla",
+                "platform-title": "Güvenli Görüşme Platformu",
+                "platform-subtitle": "End-to-end şifreli görüşme ile gizliliğiniz tamamen korunur",
+                "secure-comm": "Güvenli İletişim",
+                "secure-comm-desc": "End-to-end şifreleme ile görüşmeleriniz tamamen güvende. Üçüncü taraflar görüşmelerinize erişemez.",
+                "hd-video": "HD Video Kalitesi",
+                "hd-video-desc": "Yüksek çözünürlüklü video ve net ses kalitesi ile yüz yüze görüşme deneyimi yaşayın.",
+                "instant-msg": "Anlık Mesajlaşma",
+                "instant-msg-desc": "Seans sırasında metin mesajları ile iletişim kurabilir, dosya paylaşımı yapabilirsiniz.",
+                "find-therapist-title": "Size Uygun Terapisti Bulun",
+                "find-therapist-subtitle": "AI destekli sistemimiz size en uygun terapisti eşleştirir",
+                "therapy-type": "Terapi Türü Seçin",
+                "individual-therapy": "Bireysel Terapi",
+                "couple-therapy": "Çift Terapisi",
+                "family-therapy": "Aile Terapisi",
+                "problem-category": "Sorun Kategorisi",
+                "anxiety-stress": "Anksiyete ve Stres",
+                "depression": "Depresyon",
+                "relationship": "İlişki Sorunları",
+                "trauma": "Travma ve PTSD",
+                "preferred-lang": "Tercih Edilen Dil",
+                "find-therapists": "Uygun Terapistleri Bul",
+                "packages-title": "Paket Seçenekleri",
+                "packages-subtitle": "İhtiyacınıza uygun paketi seçin",
+                "single-session": "Tek Seans",
+                "monthly-package": "Aylık Paket",
+                "yearly-package": "Yıllık Paket",
+                "most-popular": "En Popüler",
+                "select-package": "Paketi Seç",
+                "therapists-title": "Uzman Terapistlerimiz",
+                "filter": "Filtrele:",
+                "specialty": "Uzmanlık Alanı",
+                "book-appointment": "Randevu Al",
+                "view-all-therapists": "Tüm Terapistleri Görüntüle",
+                "reviews-title": "Müşteri Değerlendirmeleri",
+                "reviews-subtitle": "Kullanıcılarımızın deneyimleri",
+                "cta-title": "Hemen Başlayın",
+                "cta-subtitle": "Size uygun terapisti bulun ve mental sağlığınız için ilk adımı atın",
+                "free-evaluation": "Ücretsiz Değerlendirme",
+                "therapist-list": "Terapist Listesi",
+                "footer-about": "Profesyonel online terapi hizmetleri ile mental sağlığınızı destekliyoruz.",
+                "footer-services": "Hizmetler",
+                "footer-support": "Destek",
+                "footer-contact": "İletişim",
+                "footer-privacy": "Gizlilik Politikası",
+                "footer-terms": "Kullanım Şartları",
+                "footer-cookies": "Çerez Politikası",
+                "footer-payment": "Ödeme Yöntemleri:",
+                "footer-copyright": "© 2025 Modecalm. Tüm hakları saklıdır.",
+                "services-title": "Hizmetlerimiz",
+                "services-subtitle": "Mental sağlığınızı desteklemek için buradayız.",
+                "service1-title": "Doğru Uzmanı Bulun",
+                "service1-desc": "Uzman ağımızı inceleyin ve ihtiyaçlarınıza en uygun psikoloğu uzmanlık alanına göre filtreleyin.",
+                "service1-btn": "Terapistleri İncele",
+                "service2-title": "Online Randevu Alın",
+                "service2-desc": "Kullanımı kolay online rezervasyon sistemimizle dilediğiniz zaman randevu oluşturun.",
+                "service2-btn": "Şimdi Randevu Al",
+                "service3-title": "Randevularınızı Yönetin",
+                "service3-desc": "Kişisel panelinizden yaklaşan ve geçmiş randevularınızı görüntüleyin ve yönetin.",
+                "service3-btn-loggedout": "Yönetmek için Giriş Yap",
+                'psychologists-title': 'Terapistler',
+                'search-by-specialty': 'Uzmanlık alanına göre ara...',
+                'search-button': 'Ara',
+                'filter-message': '"%specialty%" uzmanlık alanındaki terapistler gösteriliyor.',
+                'clear-filter': 'Filtreyi Temizle',
+                'reviews-count': 'yorum',
+                'go-to-profile': 'Profiline Git',
+                'no-psychologists': 'Aradığınız kriterlere uygun terapist bulunamadı',
+                'search-results-title': 'Arama Sonuçları: "%query%"',
+                'search-by-specialty': 'Uzmanlık alanına göre ara...',
+                'search-button': 'Ara',
+                'filter-message': '"<strong>%query%</strong>" uzmanlık alanındaki terapistler gösteriliyor.',
+                'clear-filter': 'Filtreyi Temizle',
+                'reviews-count': 'yorum',
+                'go-to-profile': 'Profiline Git',
+                'no-results-title': 'Sonuç Bulunamadı',
+                'no-results-message': 'Aradığınız kriterlere uygun terapist bulunamadı. Lütfen arama teriminizi değiştirin veya aşağıdaki popüler uzmanlık alanlarını inceleyin.',
+                'view-all-psychologists': 'Tüm Terapistleri Görüntüle',
+                'popular-specialties-title': 'Popüler Uzmanlık Alanları',
+                'anxiety': 'Anksiyete',
+                'depression': 'Depresyon',
+                'trauma': 'Travma',
+                'addiction': 'Bağımlılık',
+                'my-appointments-title': 'Randevularım',
+                'upcoming-appointments-heading': 'Yaklaşan Randevular',
+                'past-appointments-heading': 'Geçmiş Randevular',
+                'counselor-name-label': 'Danışman',
+                'appointment-date-label': 'Randevu Tarihi',
+                'appointment-time-label': 'Randevu Saati',
+                'view-details-btn': 'Detayları Görüntüle',
+                'appointment-status-upcoming': 'Planlandı',
+                'appointment-status-completed': 'Tamamlandı',
+                'appointment-status-cancelled': 'İptal Edildi',
+                'no-upcoming-appointments-message': 'Yaklaşan randevunuz bulunmamaktadır.',
+                'no-past-appointments-message': 'Geçmiş randevunuz bulunmamaktadır.',
+                'back-to-appointments-btn': 'Randevularıma Geri Dön',
+                'appointment-detail-title': 'Randevu Detayı',
+                'appointment-info-heading': 'Randevu Bilgileri',
+                'status-label': 'Durum',
+                'psychologist-info-heading': 'Psikolog Bilgileri',
+                'specialties-label': 'Uzmanlık Alanları',
+                'bio-label': 'Biyografi',
+                'cancel-appointment-btn': 'Randevuyu İptal Et',
+                'cancel-confirmation-message': 'Bu randevuyu iptal etmek istediğinizden emin misiniz?',
+                'go-back-to-list': 'Terapistlere Geri Dön',
+                'book-appointment-btn': 'Randevu Al',
+                'about-heading': 'Hakkında',
+                'education-heading': 'Eğitim',
+                'languages-heading': 'Diller',
+                'work-areas-heading': 'Çalışma Alanları',
+                'reviews-heading': 'Değerlendirmeler',
+                'no-reviews-message': 'Bu psikolog hakkında yorumlar henüz mevcut değil.',
+                'leave-review-heading': 'Değerlendirme Yap',
+                'rating-label': 'Değerlendirme',
+                'comment-label': 'Yorum',
+                'leave-review-btn': 'Yorum Bırak',
+                "tab-about": "Özgeçmiş",
+                "tab-education": "Eğitim",
+                "tab-specialties": "Uzmanlık Alanları",
+                "tab-reviews": "Değerlendirmeler",
+                "login-to-review-prompt": "Değerlendirme yapmak için ",
+                "login-action": "giriş yapmalısınız",
+                "comment-placeholder": "Deneyimlerinizi paylaşın...",
+                'availability-title': 'Müsaitlik',
+                'select-date-heading': 'Bir Tarih Seçin',
+                'check-availability-button': 'Müsait Zamanları Kontrol Et',
+                'available-slots-for-date': 'Tarihi İçin Müsait Zaman Dilimleri',
+                'subscription-plan-description': 'Mental sağlığınıza yapacağınız en iyi yatırım için size uygun planı seçin.',
+                "subscription-standard-plan": "Standart Plan",
+                "subscription-advanced-plan": "Gelişmiş Plan",
+                "intensive-support-plan": "Yoğun Destek Planı",
+                "one-session-per-month": "Aylık 1 seans (50 dk)",
+                "two-session-per-month": "Aylık 2 seans",
+                "four-session-per-month": "Aylık 4 seans",
+                "subscription-month": "/Ay",
+                "user-profile-account":"Hesap Bilgileri",
+                "user-profile-mysubscription":"Abonelik",
+                "auth-logout": "Oturumu Kapat",
+                "your-chosen-plan":"Seçtiğiniz plan:",
+                "select-plan": "Planı Seç",
+                "AI-powered-pre-assessment": "AI destekli ön değerlendirme",
+                "development-analysis-report": "Gelişim analiz raporu",
+                "Post-session-AI-therapist-note-summary": "Seans sonrası AI terapist notu özeti",
+                "most-popular": "En Popüler",
+                "payment-step": "Ödeme Adımı",
+                "payment-successful": "Ödeme Başarılı",
+                "payment-success": "Ödemeniz başarıyla alınmıştır.",
+                "payment-added-phone-bill":"Abonelik ücreti telefon faturanıza ek olarak yansıtılacaktır. Sağlıklı günler dileriz.",
+                "start-making-appointments":"Randevu Almaya Başla",
+                "update-password": "Şifre Güncelle",
+                "therapist-matching": "Terapist Eşleştirme",
+                "received-psychological-support-before": "Daha önce psikolojik destek aldınız mı?",
+                "what-kind-of-psychological-support-receive":"Ne tür bir psikolojik destek aldınız?",
+                "approach-based-psychotherapy-support-receive":"Hangi yaklaşım temelli psikoterapi desteği aldınız?",
+                "frequency-numberof-sessions-per-month":"Aylık kaç seans görüşme / görüşme sıklığı nedir?",
+                "briefly-explain-reason-for-seeking-therapy":"Görüşme sebebini kısaca açıklar mısınız? (İsteğe bağlı)",
+                "psychological-support-looking":"Ne tür bir psikolojik destek arayışınız var?",
+                "improvement-through-psychological-support":"Psikolojik destek alarak aşağıdakilerden hangisi veya hangilerinde iyileşme bekliyorsun?",
+                "typeof-medications-duration-use":"Ne tür ilaçlar ve kullanım süreleri hakkında bilgi vermek ister misiniz? (İsteğe bağlı)",
+                "currently-on-medication":"İlaç kullanımınız devam ediyor mu?",
+                "sleep-appetite-problems":"Uyku/İştah probleminiz var mı?",
+                "how-long-been-together":"Birlikteliğiniz ne kadar süredir var?",
+                "improvement-relationship-psychological-support":"Birlikteliğiniz için destek alarak aşağıdakilerden hangisi veya hangilerinde iyileşme bekliyorsun?",
+                "number-of-children":"Çocuk sayısı?",
+                "childs-age":"Çocuğun yaşı?",
+                "improvement-child":"Çocuğunuz için aşağıdakilerden hangisi veya hangilerinde iyileşme bekliyorsun?",
+                "registration-appears-incomplete":"Kaydınız yarım kalmış gözüküyor.",
+                "continue-or-re-answer-questions":"Dilerseniz devam edebilir ya da soruları tekrar cevaplayabilirsiniz.",
+                "start-over":";Baştan Başlayın",
+                "continue": "Devam Edin",
+                "back":" Geri",
+                "therapists-who-your-criteria":"Kriterlerinize Uygun Terapistler",
+                "evaluation-report":"Değerlendirme Raporu (PDF)",
+                "choose-following-experts":"Aşağıdaki uzmanlar arasından seçim yapabilirsiniz.",
+                "recommended":"Önerilen",
+                "expertise":"Uzmanlık:",
+                "score":"Puan:",
+                "all-standard-plan-features":"Tüm standart plan özellikleri",
+                "AI-powered-schema-analysis-recommendation-module":"AI destekli şema analizi ve öneri modülü",
+                "mobile-sync-mood-tracking":"Ruh hali takibi için mobil senkronizasyon",
+                "therapy-plan-update-algorithm":"Terapi planı güncelleme algoritması",
+                "VR-supported-module-access":"VR destekli modül erişimi (travma, bağımlılık vb.)",
+                "weekly-mood-analysis-notification-follow-up":"Haftalık ruh analizi ve bildirimli takip",
+                "access-exclusive-content-personal-recommendations":"Özel içeriklere ve kişisel önerilere erişim",
+                "full-name": "Ad Soyad",
+                "phone-number": "Telefon Numarası",
+                "login-to-your-account-continue":"Devam etmek için hesabınıza giriş yapın.",
+                "individual":"Bireysel",
+                "corporate":"Kurumsal",
+                "select-your-company":"Lütfen şirketinizi seçin",
+                'no-slots-message': 'Bu tarihte müsait zaman dilimi bulunmamaktadır. Lütfen başka bir tarih seçin.',
+                "update-password": "Şifre Güncelle",
+                "old-password": "Eski Şifre",
+                "new-password": "Yeni Şifre",
+                "confirm-new-password": "Yeni Şifre (Tekrar)",
+                "update-password-button": "Şifreyi Güncelle",
+                "subscription-informations": "Abonelik Bilgilerim",
+                "current-plan": "Mevcut Plan:",
+                "remaining-sessions": "Kalan Seans Hakkı:",
+                "subscription-end-date": "Abonelik Bitiş Tarihi:",
+                "view-or-change-plans": "Planları Görüntüle veya Değiştir",
+                "no-active-subscription": "Şu anda aktif bir aboneliğiniz bulunmamaktadır.",
+                "explore-subscription-plans": "Abonelik Planlarını İncele",
+                "login-title": "Giriş Yap",
+                "login-subtitle": "Hesabınıza giriş yaparak devam edin.",
+                "individual": "Bireysel",
+                "corporate": "Kurumsal",
+                "forgot-password": "Şifremi unuttum?",
+                "login-button": "Giriş Yap",
+                "no-account": "Henüz hesabın yok mu?",
+                "select-your-company": "Lütfen şirketinizi seçin",
+                "register-subtitle": "Hizmetlerimizden yararlanmak için yeni bir hesap oluşturun.",
+                "already-have-account": "Zaten bir hesabınız var mı?"
+                
+
+            },
+            en: {
+                // İngilizce çevirileriniz
+                "help-me-choose": "Not sure what you need? Let us help!",
+                "nav-home": "Home",
+                "nav-therapists": "Therapists",
+                "nav-Subscriptions": "Subscriptions",
+                "nav-appointments": "My Appointments",
+                "nav-ourSubscriptionPlans": "Our Subscription Plans",
+                "nav-blog": "Blog",
+                "nav-faq": "FAQ",
+                "nav-contact": "Contact",
+                "nav-login": "Login",
+                "nav-register": "Register",
+                "hero-title": "Professional Online Therapy Service",
+                "hero-subtitle": "Secure meeting platform with expert therapists. Get professional support in the comfort of your home, in privacy.",
+                "start-button": "Start Now",
+                "platform-title": "Secure Meeting Platform",
+                "platform-subtitle": "Your privacy is fully protected with end-to-end encrypted communication",
+                "secure-comm": "Secure Communication",
+                "secure-comm-desc": "Your sessions are completely secure with end-to-end encryption. Third parties cannot access your conversations.",
+                "hd-video": "HD Video Quality",
+                "hd-video-desc": "Experience face-to-face meetings with high-resolution video and clear audio quality.",
+                "instant-msg": "Instant Messaging",
+                "instant-msg-desc": "Communicate via text messages and share files during the session.",
+                "find-therapist-title": "Find Your Perfect Therapist",
+                "find-therapist-subtitle": "Our AI-powered system matches you with the most suitable therapist",
+                "therapy-type": "Select Therapy Type",
+                "individual-therapy": "Individual Therapy",
+                "couple-therapy": "Couple Therapy",
+                "family-therapy": "Family Therapy",
+                "problem-category": "Problem Category",
+                "anxiety-stress": "Anxiety and Stress",
+                "depression": "Depression",
+                "relationship": "Relationship Issues",
+                "trauma": "Trauma and PTSD",
+                "preferred-lang": "Preferred Language",
+                "find-therapists": "Find Suitable Therapists",
+                "packages-title": "Package Options",
+                "packages-subtitle": "Choose the package that suits your needs",
+                "single-session": "Single Session",
+                "monthly-package": "Monthly Package",
+                "yearly-package": "Yearly Package",
+                "most-popular": "Most Popular",
+                "select-package": "Select Package",
+                "therapists-title": "Our Expert Therapists",
+                "filter": "Filter:",
+                "specialty": "Specialty",
+                "book-appointment": "Book Appointment",
+                "view-all-therapists": "View All Therapists",
+                "reviews-title": "Client Reviews",
+                "reviews-subtitle": "Experiences from our users",
+                "cta-title": "Get Started Now",
+                "cta-subtitle": "Find your suitable therapist and take the first step for your mental health",
+                "free-evaluation": "Free Evaluation",
+                "therapist-list": "Therapist List",
+                "footer-about": "Supporting your mental health with professional online therapy services.",
+                "footer-services": "Services",
+                "footer-support": "Support",
+                "footer-contact": "Contact",
+                "footer-privacy": "Privacy Policy",
+                "footer-terms": "Terms of Use",
+                "footer-cookies": "Cookie Policy",
+                "footer-payment": "Payment Methods:",
+                "footer-copyright": "© 2025 Modecalm. All rights reserved.",
+                "services-title": "Our Services",
+                "services-subtitle": "We are here to support your mental health.",
+                "service1-title": "Find the Right Specialist",
+                "service1-desc": "Browse our network of experts and filter by specialty to find the most suitable psychologist for your needs.",
+                "service1-btn": "Browse Therapists",
+                "service2-title": "Book an Online Appointment",
+                "service2-desc": "Create an appointment anytime with our easy-to-use online booking system.",
+                "service2-btn": "Book Now",
+                "service3-title": "Manage Your Appointments",
+                "service3-desc": "View and manage your upcoming and past appointments from your personal dashboard.",
+                "service3-btn-loggedout": "Login to Manage",
+                'psychologists-title': 'Psychologists',
+                'search-by-specialty': 'Search by specialty...',
+                'search-button': 'Search',
+                'filter-message': 'Showing psychologists for the specialty: "%specialty%".',
+                'clear-filter': 'Clear Filter',
+                'reviews-count': 'reviews',
+                'go-to-profile': 'Go to Profile',
+                'no-psychologists': 'No psychologists found matching your criteria.',
+                'search-results-title': 'Search Results: "%query%"',
+                'search-by-specialty': 'Search by specialty...',
+                'search-button': 'Search',
+                'filter-message': 'Showing psychologists for the specialty: "<strong>%query%</strong>"',
+                'clear-filter': 'Clear Filter',
+                'reviews-count': 'reviews',
+                'go-to-profile': 'Go to Profile',
+                'no-results-title': 'No Results Found',
+                'no-results-message': 'No psychologists were found matching your criteria. Please change your search terms or check out the popular specialties below.',
+                'view-all-psychologists': 'View All Psychologists',
+                'popular-specialties-title': 'Popular Specialties',
+                'anxiety': 'Anxiety',
+                'depression': 'Depression',
+                'trauma': 'Trauma',
+                'addiction': 'Addiction',
+                'relationship-problems': 'Relationship Problems',
+                
+                'my-appointments-title': 'My Appointments',
+                'upcoming-appointments-heading': 'Upcoming Appointments',
+                'past-appointments-heading': 'Past Appointments',
+                'counselor-name-label': 'Counselor',
+                'appointment-date-label': 'Appointment Date',
+                'appointment-time-label': 'Appointment Time',
+                'view-details-btn': 'View Details',
+                'appointment-status-upcoming': 'Scheduled',
+                'appointment-status-completed': 'Completed',
+                'appointment-status-cancelled': 'Cancelled',
+                'no-upcoming-appointments-message': 'You have no upcoming appointments.',
+                'no-past-appointments-message': 'You have no past appointments.','back-to-appointments-btn': 'Go Back to My Appointments',
+                'appointment-detail-title': 'Appointment Details',
+                'appointment-info-heading': 'Appointment Information',
+                'status-label': 'Status',
+                'psychologist-info-heading': 'Psychologist Information',
+                'specialties-label': 'Specialties',
+                'bio-label': 'Biography',
+                'cancel-appointment-btn': 'Cancel Appointment',
+                'cancel-confirmation-message': 'Are you sure you want to cancel this appointment?',
+                'go-back-to-list': 'Go Back to Therapists',
+                'book-appointment-btn': 'Book an Appointment',
+                'about-heading': 'About',
+                'education-heading': 'Education',
+                'languages-heading': 'Languages',
+                'work-areas-heading': 'Areas of Expertise',
+                'reviews-heading': 'Reviews',
+                'no-reviews-message': 'No reviews are available for this psychologist yet.',
+                'leave-review-heading': 'Leave a Review',
+                'rating-label': 'Rating',
+                'comment-label': 'Comment',
+                'leave-review-btn': 'Leave a Review',
+                "tab-about": "About",
+                "tab-education": "Education",
+                "tab-specialties": "Specialties",
+                "tab-reviews": "Reviews",
+                "login-to-review-prompt": "To leave a review, please ",
+                "login-action": "log in",
+                "comment-placeholder": "Share your experience...",
+                 'availability-title': 'Availability',
+                    'select-date-heading': 'Select a Date',
+                    'check-availability-button': 'Check Availability',
+                    'available-slots-for-date': 'Available Time Slots for',
+                "subscription-plan-description": "Choose the plan that suits you for the best investment you can make in your mental health.",
+                "subscription-standard-plan": "Standard Plan",
+                "subscription-advanced-plan": "Advanced Plan",
+                "intensive-support-plan": "Intensive Support Plan",
+                "one-session-per-month": "1 Session per Month (50 min)",
+                "two-session-per-month": "2 Session per Month",
+                "four-session-per-month": "4 Session per Month",
+                "subscription-month": "/Monthly",
+                "user-profile-account":"Account Informations",
+                "user-profile-mysubscription":"Subscription",
+                "auth-logout": "Logout",
+                "your-chosen-plan":"Your chosen plan:",
+                "select-plan": "Select Plan",
+                "AI-powered-pre-assessment": "AI-powered Pre-Assessment",
+                "development-analysis-report": "Development analysis report",
+                "Post-session-AI-therapist-note-summary": "Post-session AI therapist note summary",
+                "most-popular": "Most Popular",
+                "payment-step": "Payment Step",
+                "payment-successful": "Payment Successful",
+                "payment-success": "Your payment has been successfully received.",
+                "payment-added-phone-bill":"The subscription fee will be added to your phone bill. We wish you good health.",
+                "start-making-appointments":"Start Making Appointments",
+                "update-password": "Update Password",
+                "therapist-matching": "Therapist Matching",
+                "received-psychological-support-before": "Have you received psychological support before?",
+                "what-kind-of-psychological-support-receive":"What kind of psychological support did you receive?",
+                "approach-based-psychotherapy-support-receive":"What approach-based psychotherapy support did you receive?",
+                "frequency-numberof-sessions-per-month":"What is the frequency/number of sessions per month?",
+                "briefly-explain-reason-for-seeking-therapy":"Could you briefly explain your reason for seeking therapy? (Optional)",
+                "psychological-support-looking":"What kind of psychological support are you looking for?",
+                "improvement-through-psychological-support":"Which of the following would you like to see improvement in through psychological support?",
+                "typeof-medications-duration-use":"Would you like to provide information about the type of medications and duration of use? (Optional)",
+                "currently-on-medication":"Are you currently on medication?",
+                "sleep-appetite-problems":"Do you have sleep/appetite problems?",
+                "how-long-been-together":"How long have you been together?",
+                "improvement-relationship-psychological-support":"Which of the following would you like to see improvement in regarding your relationship by seeking support?",
+                "number-of-children":"Number of children?",
+                "childs-age":"Child's age?",
+                "improvement-child":"Which of the following would you like to see improvement in for your child?",
+                "registration-appears-incomplete":"Your registration appears to be incomplete.",
+                "continue-or-re-answer-questions":"Would you like to continue or re-answer the questions?",
+                "start-over":"Start Over",
+                "continue": "Continue",
+                "back":" Back",
+                "therapists-who-your-criteria":"Therapists Who Meet Your Criteria",
+                "evaluation-report":"Evaluation report (PDF)",
+                "choose-following-experts":"You can choose from the following experts.",
+                "recommended":"Recommended",
+                "expertise":"Expertise:",
+                "score":"Score:",
+                "all-standard-plan-features":"All standard plan features",
+                "AI-powered-schema-analysis-recommendation-module":"AI-powered schema analysis and recommendation module",
+                "mobile-sync-mood-tracking":"Mobile sync for mood tracking",
+                "therapy-plan-update-algorithm":"Therapy plan update algorithm",
+                "VR-supported-module-access":"VR-supported module access (trauma, addiction, etc.)",
+                "weekly-mood-analysis-notification-follow-up":"Weekly mood analysis and notification follow-up",
+                "access-exclusive-content-personal-recommendations":"Access to exclusive content and personal recommendations",
+                "full-name": "Full Name",
+                "phone-number": "Phone Number",
+                "login-to-your-account-continue":"Log in to your account to continue.",
+                "individual":"Individual",
+                "corporate":"Corporate",
+                "select-your-company":"Please select your company",
+                    'no-slots-message': 'No available time slots for this date. Please select another date.',  
+                "update-password": "Update Password",
+                "old-password": "Old Password",
+                "new-password": "New Password",
+                "confirm-new-password": "Confirm New Password",
+                "update-password-button": "Update Password",
+                "subscription-informations": "Subscription Informations",
+                "current-plan": "Current Plan:",
+                "remaining-sessions": "Remaining Sessions:",
+                "subscription-end-date": "Subscription End Date:",
+                "view-or-change-plans": "View or Change Plans",
+                "no-active-subscription": "You currently do not have an active subscription.",
+                "explore-subscription-plans": "Explore Subscription Plans",
+                 "login-title": "Login",
+                "login-subtitle": "Log in to your account to continue.",
+                "individual": "Individual",
+                "corporate": "Corporate",
+                "forgot-password": "Forgot password?",
+                "login-button": "Login",
+                "no-account": "Don't have an account yet?",
+                "select-your-company": "Please select your company",
+                "register-subtitle": "Create a new account to benefit from our services.",
+                "already-have-account": "Already have an account?"
+                
+                        
+
+        
+            }
+        };
+        
+        function translatePage(lang) {
+            // Dil seçimini localStorage'a kaydet
+            localStorage.setItem('lang', lang);
+
+            // Sunucuya dil tercihini bildirmek için fetch isteği gönder
+            fetch('/set-language', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ lang: lang })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    console.error('Failed to set language on server:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error sending language to server:', error);
+            });
+            const elements = document.querySelectorAll('[data-translate]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[lang] && translations[lang][key]) {
+                    if (element.tagName.toLowerCase() === 'input' && element.type === 'placeholder') {
+                        element.placeholder = translations[lang][key];
+                    } else {
+                        element.textContent = translations[lang][key];
+                    }
+                }
+            });
+            document.documentElement.lang = lang;
+            document.title = translations[lang]['page-title'] || 'Modecalm';
+            const navLinks = document.querySelectorAll('nav a');
+            navLinks.forEach(link => {
+                const key = link.getAttribute('data-translate');
+                if (key && translations[lang][key]) {
+                    link.textContent = translations[lang][key];
+                }
+            });
+            const buttons = document.querySelectorAll('button[data-translate]');
+            buttons.forEach(button => {
+                const key = button.getAttribute('data-translate');
+                if (key && translations[lang][key]) {
+                    button.textContent = translations[lang][key];
+                }
+            });
+            const labels = document.querySelectorAll('label[data-translate]');
+            labels.forEach(label => {
+                const key = label.getAttribute('data-translate');
+                if (key && translations[lang][key]) {
+                    label.textContent = translations[lang][key];
+                }
+            });
+            const options = document.querySelectorAll('option[data-translate]');
+            options.forEach(option => {
+                const key = option.getAttribute('data-translate');
+                if (key && translations[lang][key]) {
+                    option.textContent = translations[lang][key];
+                }
+            });
+            // Seçilen dili localStorage'a kaydet
+            localStorage.setItem('lang', lang);
+        }
+
+        // Sayfa yüklendiğinde, localStorage'daki dil tercihini al
+        // Eğer bir tercih yoksa, varsayılan olarak 'en' kullan
+        const savedLang = localStorage.getItem('lang') || 'en';
+        
+        // Kaydedilen dile göre sayfayı çevir
+        translatePage(savedLang);
+
+        const languageSelector = document.getElementById('languageSelector');
+        if (languageSelector) {
+            // Dil seçicinin değerini, sayfa yüklendiğinde okuduğumuz dile ayarla
+            languageSelector.value = savedLang;
+
+            languageSelector.addEventListener('change', function() {
+                translatePage(this.value);
+            });
+        }
+        const langButtons = document.querySelectorAll('[class*="border-2"][class*="border-gray-300"]');
+        langButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                langButtons.forEach(btn => {
+                    btn.classList.remove('border-primary', 'text-primary', 'bg-primary/5');
+                    btn.classList.add('border-gray-300', 'text-gray-700');
+                });
+                this.classList.remove('border-gray-300', 'text-gray-700');
+                this.classList.add('border-primary', 'text-primary', 'bg-primary/5');
+            });
+        });
+    });
+</script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
