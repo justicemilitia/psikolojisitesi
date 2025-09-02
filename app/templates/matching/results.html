@@ -32,8 +32,8 @@
           <img src="{{ url_for('static', filename='images/' ~ (recommendation.profile_image_url if recommendation.profile_image_url else 'default_avatar.png')) }}" alt="" class="w-20 h-20 rounded-full object-cover">
           <div>
             <h4 class="font-bold text-lg">{{ recommendation.full_name }}</h4>
-            <p class="text-sm text-gray-700" data-translate="expertise"><strong>Expertise:</strong> {{ recommendation.specialties }}</p>
-            <p class="text-sm text-gray-700 rating-stars" data-translate="score"><strong>Score:</strong> {{ recommendation.stars }}</p>
+            <p class="text-sm text-gray-700 rating-stars"><strong>Score:</strong> {{ recommendation.stars }}</p>
+            <p class="text-sm text-gray-700"><strong>Expertise:</strong> {{ recommendation.specialties }}</p>
             <a href="{{ url_for('psychologist.psychologist_detail', psychologist_id=recommendation.id) }}" class="mt-2 inline-block px-3 py-1 bg-primary text-white rounded">Go to Profile</a>
           </div>
         </div>
@@ -47,12 +47,12 @@
             <img src="{{ url_for('static', filename='images/' ~ (t.profile_image_url if t.profile_image_url else 'default_avatar.png')) }}" class="w-16 h-16 rounded-full object-cover" alt="">
             <div>
               <h4 class="font-semibold">{{ t.full_name }}</h4>
-              <p class="text-sm text-gray-600" data-translate="expertise"><strong>Expertise:</strong> {{ t.specialties }}</p>
-              <p class="text-sm text-gray-600 rating-stars" data-translate="score"><strong>Score:</strong> {{ t.stars }}</p>
+              <p class="text-sm text-gray-600 rating-stars"><strong>Score:</strong> {{ t.stars }}</p>
+              <p class="text-sm text-gray-600"><strong>Expertise:</strong> {{ t.specialties }}</p>
             </div>
           </div>
-          <div>
-            <a href="{{ url_for('psychologist.psychologist_availability', psychologist_id=t.id) }}" class="px-3 py-2 bg-gray-100 rounded" data-translate="book-appointment">Book Appointment</a>
+          <div class="flex items-center justify-end">
+            <a href="{{ url_for('psychologist.psychologist_availability', psychologist_id=t.id) }}" class="px-3 py-2 bg-gray-100 rounded text-nowrap" data-translate="book-appointment">Book Appointment</a>
           </div>
         </div>
       {% endfor %}
