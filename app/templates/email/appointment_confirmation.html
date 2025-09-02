@@ -2,18 +2,18 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Randevu Onayı</title>
+    <title>Appointment Confirmation</title>
 </head>
 <body>
-    <p>Merhaba {{ user.full_name }},</p>
-    <p>Yeni randevunuz başarıyla oluşturulmuştur. Randevu detaylarınız aşağıdadır:</p>
+    <p>Hello {{ user.full_name }},</p>
+    <p>Your new appointment has been successfully created. Your appointment details are below:</p>
     <ul>
-        <li><strong>Psikolog:</strong> {{ appointment.psychologist.full_name }}</li>
-        <li><strong>Tarih:</strong> {{ appointment.appointment_date.strftime('%d-%m-%Y') }}</li>
-        <li><strong>Saat:</strong> {{ appointment.appointment_time.strftime('%H:%M') }}</li>
+        <li><strong>Psychologist:</strong> {{ appointment.psychologist.full_name }}</li>
+        <li><strong>Date:</strong> {{ appointment.appointment_date.strftime('%d-%m-%Y') }}</li>
+        <li><strong>Time:</strong> {{ appointment.appointment_time.strftime('%H:%M') }}</li>
     </ul>
-    <p>Randevunuz alınmıştır. Randevunuz onaylandığında tarafınıza mail ile bilgi verilecektir.</p>
+    <p>Your appointment has been made. You will be notified by email once your appointment is confirmed.</p>
     <br>
-    <p>Sağlıklı günler dileriz,<br><strong>ModeCALM Ekibi</strong></p>
+    <p>We wish you healthy days,<br><strong>ModeCALM Team</strong></p>
 </body>
 </html>
