@@ -135,14 +135,14 @@
           <h3 class="font-semibold text-lg" data-translate="number-of-children">Number of children?</h3>
           <div class="mt-4">
               <label for="number_of_children" class="sr-only">Number of children</label>
-              <input type="number" id="number_of_children" name="number_of_children" class="block w-full px-4 py-2 border rounded-md focus:ring-primary focus:border-primary" placeholder="Enter the number of children" min="0" required>
+              <input type="number" id="number_of_children" name="number_of_children" class="block w-full px-4 py-2 border rounded-md focus:ring-primary focus:border-primary" placeholder="Enter the number of children" min="1" max="15" required>
           </div>
         {# STEP 14 #}
         {% elif step == 14 %}
           <h3 class="font-semibold text-lg" data-translate="childs-age">Child's age?</h3>
           <div class="mt-4">
               <label for="age_of_children" class="sr-only">Child's age</label>
-              <input type="number" id="age_of_children" name="age_of_children" class="block w-full px-4 py-2 border rounded-md focus:ring-primary focus:border-primary" placeholder="Enter child age" min="0" required>
+              <input type="number" id="age_of_children" name="age_of_children" class="block w-full px-4 py-2 border rounded-md focus:ring-primary focus:border-primary" placeholder="Enter child age" min="5" max="18" required>
           </div>
           {# STEP 15 #}
         {% elif step == 15 %}
