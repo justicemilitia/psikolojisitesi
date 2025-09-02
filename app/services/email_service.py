@@ -11,7 +11,7 @@ def _send_appointment_approval_email(app, user, appointment):
     with app.app_context():
         try:
             msg = Message(
-                'Randevu Onayı',
+                'Appointment Confirmation',
                 sender=app.config['MAIL_DEFAULT_SENDER'],
                 recipients=[user.email]
             )
@@ -23,10 +23,10 @@ def _send_appointment_approval_email(app, user, appointment):
             )
             
             mail.send(msg)
-            app.logger.info(f"Randevu onay maili {user.email} adresine gönderildi.")
+            app.logger.info(f"Appointment confirmation email has been sent to {user.email}.")
         
         except Exception as e:
-            app.logger.error(f"Randevu onay maili gönderilirken hata oluştu: {e}")
+            app.logger.error(f"An error occurred while sending the appointment confirmation email: {e}")
             
 def send_appointment_confirmation_email(app, user, appointment):
     """
@@ -35,7 +35,7 @@ def send_appointment_confirmation_email(app, user, appointment):
     with app.app_context(): # `app` parametresi kullanılarak bağlam oluşturulur
         try:
             msg = Message(
-                'Randevunuz Alınmıştır.',
+                'Your appointment has been made.',
                 sender=app.config['MAIL_DEFAULT_SENDER'],
                 recipients=[user.email]
             )
@@ -55,5 +55,5 @@ def send_appointment_confirmation_email(app, user, appointment):
             )
             
         except Exception as e:
-            app.logger.error(f"E-posta gönderilemedi: {e}")
+            app.logger.error(f"Email could not be sent: {e}")
         
