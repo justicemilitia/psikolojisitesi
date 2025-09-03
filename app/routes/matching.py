@@ -731,8 +731,9 @@ def generate_report():
 
     pdf_output = pdf.output(dest='S')
     return send_file(
-        BytesIO(pdf_output),
+        BytesIO(pdf_output.encode('latin-1')),
         mimetype='application/pdf',
         as_attachment=True,
         download_name=f"Evaluation_Report_{user_label}.pdf"
+
     )
