@@ -62,7 +62,7 @@ class AppointmentService:
         # Randevu başarıyla oluşturulduktan sonra e-posta gönder.
         # `user` nesnesi zaten elimizde var. Model'e eklediğimiz ilişki sayesinde
         # `appointment.psychologist` şablonda otomatik olarak çalışacaktır.
-        send_appointment_confirmation_email(app, user, appointment)
+        #send_appointment_confirmation_email(app, user, appointment)
         # ▲▲▲ E-POSTA GÖNDERME İŞLEMİ BİTTİ ▲▲▲
         
         return appointment, "Appointment created successfully"
@@ -174,4 +174,5 @@ class AppointmentService:
                     ((Appointment.appointment_date == now.date()) & (Appointment.appointment_time <= now.time()))
                 )
             )
+
         ).order_by(Appointment.appointment_date.desc(), Appointment.appointment_time.desc()).all()
