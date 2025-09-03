@@ -18,7 +18,7 @@ class Config:
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS').lower() in ['true', 'on', '1']
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    MAIL_DEFAULT_SENDER = ('ModeCALM Destek', os.environ.get('MAIL_USERNAME'))
+    MAIL_DEFAULT_SENDER = ('ModeCalm Support', os.environ.get('MAIL_USERNAME'))
 
 class DevelopmentConfig(Config):
     """Development configuration"""
@@ -36,4 +36,5 @@ class ProductionConfig(Config):
     # In production, ensure these are set as environment variables
     SECRET_KEY = os.environ.get('SECRET_KEY')
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
+
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
