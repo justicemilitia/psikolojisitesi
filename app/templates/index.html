@@ -1,123 +1,122 @@
-                                {% extends "base.html" %}
+{% extends "base.html" %}
 
-                                {% block title %}Modecalm - Anasayfa{% endblock %}
+{% block title %}Modecalm - Anasayfa{% endblock %}
 
-                                {% block content %}
-                                <section class="py-20 bg-gray-100">
-                                    <div class="max-w-7xl mx-auto px-6 text-center">
-                                        <h1 class="text-4xl font-bold text-gray-900 mb-4" data-translate="hero-title">
-                                            Profesyonel Online Terapi Hizmeti
-                                        </h1>
-                                        <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto" data-translate="hero-subtitle">
-                                            Uzman terapistlerle güvenli görüşme platformu. Kendi evinizin konforunda, gizlilik içinde profesyonel destek alın.
-                                        </p>
-                                        <div class="flex flex-col sm:flex-row justify-center gap-4 mt-6 text-center">
-                                    <a href="{{ url_for('psychologist.list_psychologists') }}"
-                                    class="bg-primary text-white text-lg font-semibold px-8 py-4 rounded-xl shadow-md hover:bg-red-700 transition-all duration-200"
-                                    role="button"
-                                    data-translate="start-button">
-                                        Hemen Başla
-                                    </a>
+{% block content %}
+<section class="py-20 bg-gray-100">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4" data-translate="hero-title">
+            Profesyonel Online Terapi Hizmeti
+        </h1>
+        <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto" data-translate="hero-subtitle">
+            Uzman terapistlerle güvenli görüşme platformu. Kendi evinizin konforunda, gizlilik içinde profesyonel destek alın.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4 mt-6 text-center">
+            <a href="{{ url_for('psychologist.list_psychologists') }}"
+            class="bg-primary text-white text-lg font-semibold px-8 py-4 rounded-xl shadow-md hover:bg-red-700 transition-all duration-200"
+            role="button"
+            data-translate="start-button">
+                Hemen Başla
+            </a>
 
-                                    <a href="{{ url_for('matching.find_therapist') }}"
-                                class="bg-white border-2 border-primary text-primary text-lg font-semibold px-8 py-4 rounded-xl shadow-md hover:bg-primary/5 transition-all duration-200"
-                                role="button"
-                                data-translate="help-me-choose">
-                                    Neye ihtiyacım olduğunu bilmiyorum, yardım et!
-                                    </a>
-                                </div>
+            <a href="{{ url_for('matching.find_therapist') }}"
+                class="bg-white border-2 border-primary text-primary text-lg font-semibold px-8 py-4 rounded-xl shadow-md hover:bg-primary/5 transition-all duration-200"
+                role="button"
+                data-translate="help-me-choose">
+                    Neye ihtiyacım olduğunu bilmiyorum, yardım et!
+            </a>
+        </div>
+    </div>
+</section>
 
-                                    </div>
-                                </section>
-
-                                <section class="py-20">
-                                    <div class="max-w-7xl mx-auto px-6">
-                                        <div class="text-center mb-16">
-                                            <h2 class="text-4xl font-bold text-gray-900 mb-4" data-translate="services-title">Hizmetlerimiz</h2>
-                                            <p class="text-xl text-gray-600" data-translate="services-subtitle">Mental sağlığınızı desteklemek için buradayız.</p>
-                                        </div>
-                                        <div class="grid md:grid-cols-3 gap-8">
-                                            <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
-                                                <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                                                    <i class="ri-search-line text-2xl text-primary"></i>
-                                                </div>
-                                                <h5 class="text-xl font-semibold text-gray-900 mb-2" data-translate="service1-title">Doğru Uzmanı Bulun</h5>
-                                                <p class="text-gray-600 mb-4" data-translate="service1-desc">Uzman ağımızı inceleyin ve ihtiyaçlarınıza en uygun psikoloğu uzmanlık alanına göre filtreleyin.</p>
-                                                <a href="{{ url_for('matching.find_therapist') }}" class="inline-block bg-primary text-white py-3 px-6 !rounded-button hover:bg-red-700 transition-colors whitespace-nowrap" data-translate="service1-btn">
-                                                    Terapistleri İncele
-                                                </a>
-                                            </div>
-                                            <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
-                                                <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                                                    <i class="ri-calendar-line text-2xl text-primary"></i>
-                                                </div>
-                                                <h5 class="text-xl font-semibold text-gray-900 mb-2" data-translate="service2-title">Online Randevu Alın</h5>
-                                                <p class="text-gray-600 mb-4" data-translate="service2-desc">Kullanımı kolay online rezervasyon sistemimizle dilediğiniz zaman randevu oluşturun.</p>
-                                                <a href="{{ url_for('psychologist.list_psychologists') }}" class="inline-block bg-primary text-white py-3 px-6 !rounded-button hover:bg-red-700 transition-colors whitespace-nowrap" data-translate="service2-btn">
-                                                    Şimdi Randevu Al
-                                                </a>
-                                            </div>
-                                            <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
-                                                <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                                                    <i class="ri-dashboard-line text-2xl text-primary"></i>
-                                                </div>
-                                                <h5 class="text-xl font-semibold text-gray-900 mb-2" data-translate="service3-title">Randevularınızı Yönetin</h5>
-                                                <p class="text-gray-600 mb-4" data-translate="service3-desc">Kişisel panelinizden yaklaşan ve geçmiş randevularınızı görüntüleyin ve yönetin.</p>
-                                                {% if current_user.is_authenticated %}
-                                                    <a href="{{ url_for('user.appointments') }}" class="inline-block bg-primary text-white py-3 px-6 !rounded-button hover:bg-red-700 transition-colors whitespace-nowrap" data-translate="nav-appointments">
-                                                        Randevularım
-                                                    </a>
-                                                {% else %}
-                                                    <a href="{{ url_for('auth.login') }}" class="inline-block bg-primary text-white py-3 px-6 !rounded-button hover:bg-red-700 transition-colors whitespace-nowrap" data-translate="service3-btn-loggedout">
-                                                        Yönetmek için Giriş Yap
-                                                    </a>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <section class="py-20">
-                                        <div class="max-w-7xl mx-auto px-6">
-                                        <div class="text-center mb-16">
-                                        <h2 class="text-4xl font-bold text-gray-900 mb-4" data-translate="platform-title">Secure Meeting Platform</h2>
-                                        <p class="text-xl text-gray-600" data-translate="platform-subtitle">Your privacy is fully protected with end-to-end encrypted communication</p>
-                                        </div>
-                                        <div class="flex flex-col lg:flex-row items-center gap-12">
-                                        <div class="lg:w-1/2">
-                                       <img src="{{ url_for('static', filename='images/image_3e56e6.png') }}" alt="Görsel açıklaması">
-                                        </div>
-                                        <div class="lg:w-1/2">
-                                        <div class="space-y-6">
-                                        <div class="flex items-start gap-4">
-                                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary/10 shrink-0">
-                                        <i class="ri-shield-check-line text-2xl text-primary"></i>
-                                        </div>
-                                        <div>
-                                        <h3 class="text-xl font-semibold text-gray-900 mb-2" data-translate="secure-comm">Secure Communication</h3>
-                                        <p class="text-gray-600" data-translate="secure-comm-desc">Your sessions are completely secure with end-to-end encryption. Third parties cannot access your conversations.</p>
-                                        </div>
-                                        </div>
-                                        <div class="flex items-start gap-4">
-                                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary/10 shrink-0">
-                                        <i class="ri-vidicon-line text-2xl text-primary"></i>
-                                        </div>
-                                        <div>
-                                        <h3 class="text-xl font-semibold text-gray-900 mb-2" data-translate="hd-video">HD Video Quality</h3>
-                                        <p class="text-gray-600" data-translate="hd-video-desc">Experience face-to-face meetings with high-resolution video and clear audio quality.</p>
-                                        </div>
-                                        </div>
-                                        <div class="flex items-start gap-4">
-                                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary/10 shrink-0">
-                                        <i class="ri-message-3-line text-2xl text-primary"></i>
-                                        </div>
-                                        <div>
-                                        <h3 class="text-xl font-semibold text-gray-900 mb-2" data-translate="instant-msg">Instant Messaging</h3>
-                                        <p class="text-gray-600" data-translate="instant-msg-desc">Communicate via text messages and share files during the session.</p>
-                                </div>
-                                </div>
-                                </div>
-                                </div>
-                                </div>
-                                </div>
-                                </section>
-                                </section>
-                                {% endblock %}
+<section class="py-20">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4" data-translate="services-title">Hizmetlerimiz</h2>
+            <p class="text-xl text-gray-600" data-translate="services-subtitle">Mental sağlığınızı desteklemek için buradayız.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
+                <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="ri-search-line text-2xl text-primary"></i>
+                </div>
+                <h5 class="text-xl font-semibold text-gray-900 mb-2" data-translate="service1-title">Doğru Uzmanı Bulun</h5>
+                <p class="text-gray-600 mb-4" data-translate="service1-desc">Uzman ağımızı inceleyin ve ihtiyaçlarınıza en uygun psikoloğu uzmanlık alanına göre filtreleyin.</p>
+                <a href="{{ url_for('matching.find_therapist') }}" class="inline-block bg-primary text-white py-3 px-6 !rounded-button hover:bg-red-700 transition-colors whitespace-nowrap" data-translate="service1-btn">
+                    Terapistleri İncele
+                </a>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
+                <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="ri-calendar-line text-2xl text-primary"></i>
+                </div>
+                <h5 class="text-xl font-semibold text-gray-900 mb-2" data-translate="service2-title">Online Randevu Alın</h5>
+                <p class="text-gray-600 mb-4" data-translate="service2-desc">Kullanımı kolay online rezervasyon sistemimizle dilediğiniz zaman randevu oluşturun.</p>
+                <a href="{{ url_for('psychologist.list_psychologists') }}" class="inline-block bg-primary text-white py-3 px-6 !rounded-button hover:bg-red-700 transition-colors whitespace-nowrap" data-translate="service2-btn">
+                    Şimdi Randevu Al
+                </a>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
+                <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="ri-dashboard-line text-2xl text-primary"></i>
+                </div>
+                <h5 class="text-xl font-semibold text-gray-900 mb-2" data-translate="service3-title">Randevularınızı Yönetin</h5>
+                <p class="text-gray-600 mb-4" data-translate="service3-desc">Kişisel panelinizden yaklaşan ve geçmiş randevularınızı görüntüleyin ve yönetin.</p>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('user.appointments') }}" class="inline-block bg-primary text-white py-3 px-6 !rounded-button hover:bg-red-700 transition-colors whitespace-nowrap" data-translate="nav-appointments">
+                        Randevularım
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="inline-block bg-primary text-white py-3 px-6 !rounded-button hover:bg-red-700 transition-colors whitespace-nowrap" data-translate="service3-btn-loggedout">
+                        Yönetmek için Giriş Yap
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <section class="py-20">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4" data-translate="platform-title">Secure Meeting Platform</h2>
+                <p class="text-xl text-gray-600" data-translate="platform-subtitle">Your privacy is fully protected with end-to-end encrypted communication</p>
+            </div>
+            <div class="flex flex-col lg:flex-row items-center gap-12">
+            <div class="lg:w-1/2">
+                <img src="{{ url_for('static', filename='images/image_3e56e6.png') }}" alt="Görsel açıklaması">
+            </div>
+            <div class="lg:w-1/2">
+            <div class="space-y-6">
+            <div class="flex items-start gap-4">
+            <div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary/10 shrink-0">
+                <i class="ri-shield-check-line text-2xl text-primary"></i>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2" data-translate="secure-comm">Secure Communication</h3>
+                <p class="text-gray-600" data-translate="secure-comm-desc">Your sessions are completely secure with end-to-end encryption. Third parties cannot access your conversations.</p>
+            </div>
+        </div>
+        <div class="flex items-start gap-4">
+        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary/10 shrink-0">
+        <i class="ri-vidicon-line text-2xl text-primary"></i>
+        </div>
+        <div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2" data-translate="hd-video">HD Video Quality</h3>
+            <p class="text-gray-600" data-translate="hd-video-desc">Experience face-to-face meetings with high-resolution video and clear audio quality.</p>
+        </div>
+        </div>
+        <div class="flex items-start gap-4">
+        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary/10 shrink-0">
+            <i class="ri-message-3-line text-2xl text-primary"></i>
+        </div>
+        <div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2" data-translate="instant-msg">Instant Messaging</h3>
+            <p class="text-gray-600" data-translate="instant-msg-desc">Communicate via text messages and share files during the session.</p>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </section>
+</section>
+{% endblock %}
