@@ -53,7 +53,7 @@
 <body class="bg-white">
     <header class="bg-white shadow-sm">
         <nav class="px-8 py-4 flex items-center justify-between">
-<a href="http://127.0.0.1:5000//">
+<a href="{{ url_for('main.index') }}">
     <div class="flex flex-col items-center">
         <div class="flex items-center font-['Montserrat'] text-3xl font-bold text-primary">
             M<i class="ri-shut-down-line -mt-1 text-3xl"></i>decalm
@@ -63,7 +63,7 @@
         </div>
     </div>
 </a>
-<a href="https://wa.me/+905535014290" target="_blank" 
+<a href="https://wa.me/+905339609232" target="_blank" 
    class="fixed bottom-6 right-6 flex items-center justify-center p-4 
           bg-[#25D366] text-white rounded-full shadow-lg transition-transform
           hover:scale-110 hover:shadow-xl group">
@@ -76,7 +76,6 @@
                 <a href="{{ url_for('psychologist.list_psychologists') }}" class="text-gray-700 hover:text-primary transition-colors" data-translate="nav-therapists">Therapists</a>
                 <a href="{{ url_for('user.appointments') }}" class="text-gray-700 hover:text-primary transition-colors" data-translate="nav-appointments">My Appointments</a>
                 <a href="{{ url_for('subscription.list_subscriptions') }}" class="text-gray-700 hover:text-primary transition-colors" data-translate="nav-Subscriptions">Subscriptions</a>
-                <a href="#" class="text-gray-700 hover:text-primary transition-colors" data-translate="nav-blog">Blog</a>
                 
             </div>
             <div class="flex items-center space-x-4">                
@@ -159,28 +158,21 @@
                     <div class="font-['Pacifico'] text-2xl text-white mb-4">Modecalm</div>
                     <p class="text-gray-400 mb-4" data-translate="footer-about">Supporting your mental health with professional online therapy services.</p>
                     <div class="flex space-x-4">
-                        <div class="w-8 h-8 flex items-center justify-center">
-                            <i class="ri-facebook-fill text-xl text-gray-400 hover:text-white cursor-pointer"></i>
-                        </div>
-                        <div class="w-8 h-8 flex items-center justify-center">
-                            <i class="ri-twitter-fill text-xl text-gray-400 hover:text-white cursor-pointer"></i>
-                        </div>
-                        <div class="w-8 h-8 flex items-center justify-center">
-                            <i class="ri-instagram-fill text-xl text-gray-400 hover:text-white cursor-pointer"></i>
-                        </div>
-                        <div class="w-8 h-8 flex items-center justify-center">
-                            <i class="ri-linkedin-fill text-xl text-gray-400 hover:text-white cursor-pointer"></i>
-                        </div>
+                        <a href="https://www.linkedin.com/company/modecalm/" target="_blank">
+                            <div class="w-8 h-8 flex items-center justify-center">
+                                <i class="ri-linkedin-fill text-xl text-gray-400 hover:text-white cursor-pointer"></i>
+                            </div>
+                        </a>
                     </div>
                 </div>
                 
                 <div>
                     <h3 class="text-lg font-semibold mb-4" data-translate="footer-services">Services</h3>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Individual Therapy</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Couple Therapy</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Family Therapy</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Group Therapy</a></li>
+                        <li><a href="{{ url_for('psychologist.search_psychologists') }}" class="text-gray-400 hover:text-white transition-colors">Individual Therapy</a></li>
+                        <li><a href="{{ url_for('psychologist.list_psychologists') }}" class="text-gray-400 hover:text-white transition-colors">Couple Therapy</a></li>
+                        <li><a href="{{ url_for('psychologist.list_psychologists') }}" class="text-gray-400 hover:text-white transition-colors">Family Therapy</a></li>
+                        <li><a href="{{ url_for('psychologist.list_psychologists') }}" class="text-gray-400 hover:text-white transition-colors">Child & Adolescent Therapy</a></li>
                     </ul>
                 </div>
                 
@@ -223,18 +215,6 @@
                         <a href="#" class="text-gray-400 hover:text-white transition-colors" data-translate="footer-privacy">Privacy Policy</a>
                         <a href="#" class="text-gray-400 hover:text-white transition-colors" data-translate="footer-terms">Terms of Use</a>
                         <a href="#" class="text-gray-400 hover:text-white transition-colors" data-translate="footer-cookies">Cookie Policy</a>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <span class="text-gray-400" data-translate="footer-payment">Payment Methods:</span>
-                        <div class="w-6 h-6 flex items-center justify-center">
-                            <i class="ri-visa-fill text-xl text-gray-400"></i>
-                        </div>
-                        <div class="w-6 h-6 flex items-center justify-center">
-                            <i class="ri-mastercard-fill text-xl text-gray-400"></i>
-                        </div>
-                        <div class="w-6 h-6 flex items-center justify-center">
-                            <i class="ri-paypal-fill text-xl text-gray-400"></i>
-                        </div>
                     </div>
                 </div>
                 <div class="text-center mt-8">
