@@ -24,13 +24,13 @@
 
 {% if psychologists %}
 {% set query = request.args.get('q', '') %}
-{% set message = '"' ~ query|e ~ '" uzmanlık alanındaki terapistler gösteriliyor.' %}
+{% set message = 'Showing therapists in the "' ~ query|e ~ '" specialty.' %}
 <div class="bg-gray-100 text-gray-700 rounded-lg p-4 mb-8 flex justify-between items-center border border-gray-200">
     <span>
         {{ message | safe }}
     </span>
     <a href="{{ url_for('psychologist.list_psychologists') }}" class="text-primary hover:underline font-semibold transition-colors">
-        Filtreyi Temizle
+        Clear Filter
     </a>
 </div>
 {% endif %}
@@ -110,4 +110,5 @@ Bağımlılık
 </div>
 </div>
 </section>
+
 {% endblock %}
